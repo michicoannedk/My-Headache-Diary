@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="100" fill="#c0392b"/>
+  
+  <!-- Brain outline -->
+  <g transform="translate(256,230) scale(1.1)">
+    <!-- Left hemisphere -->
+    <path d="M-20,-90 C-20,-90 -80,-85 -100,-50 C-120,-15 -110,20 -95,40 C-80,60 -70,70 -65,85 C-60,100 -55,110 -30,115 C-20,117 -20,100 -20,80 Z" 
+          fill="none" stroke="white" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Right hemisphere -->
+    <path d="M20,-90 C20,-90 80,-85 100,-50 C120,-15 110,20 95,40 C80,60 70,70 65,85 C60,100 55,110 30,115 C20,117 20,100 20,80 Z" 
+          fill="none" stroke="white" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Center divider -->
+    <line x1="0" y1="-90" x2="0" y2="115" stroke="white" stroke-width="10" stroke-linecap="round"/>
+    <!-- Left grooves -->
+    <path d="M-20,-40 C-50,-35 -65,-15 -60,5" fill="none" stroke="white" stroke-width="9" stroke-linecap="round"/>
+    <path d="M-20,20 C-55,20 -70,45 -60,60" fill="none" stroke="white" stroke-width="9" stroke-linecap="round"/>
+    <!-- Right grooves -->
+    <path d="M20,-40 C50,-35 65,-15 60,5" fill="none" stroke="white" stroke-width="9" stroke-linecap="round"/>
+    <path d="M20,20 C55,20 70,45 60,60" fill="none" stroke="white" stroke-width="9" stroke-linecap="round"/>
+  </g>
+
+  <!-- Pain lightning bolt -->
+  <g transform="translate(256,130)">
+    <polygon points="15,-28 -5,5 10,5 -15,30 10,30 -18,65 30,10 12,10 32,-28" 
+             fill="#FFD700" stroke="#c0392b" stroke-width="3"/>
+  </g>
+
+  <!-- Book at bottom -->
+  <rect x="156" y="370" width="200" height="26" rx="5" fill="white" opacity="0.9"/>
+  <rect x="156" y="370" width="4" height="26" rx="2" fill="#c0392b"/>
+  <line x1="176" y1="377" x2="346" y2="377" stroke="#e8dfd0" stroke-width="3"/>
+  <line x1="176" y1="385" x2="320" y2="385" stroke="#e8dfd0" stroke-width="3"/>
+</svg>

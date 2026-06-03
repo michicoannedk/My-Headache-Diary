@@ -1,0 +1,18 @@
+{
+  "name": "Headache Diary",
+  "short_name": "Headache Diary",
+  "description": "Track your headache episodes",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf7f2",
+  "theme_color": "#c0392b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
