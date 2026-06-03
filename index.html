@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Headache Diary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #faf7f2;
+      --surface: #ffffff;
+      --surface2: #f3ede3;
+      --border: #e8dfd0;
+      --text: #1a1208;
+      --text2: #6b5c45;
+      --accent: #c0392b;
+      --accent2: #e8a87c;
+      --accent3: #2c6e49;
+      --accent-light: #fdecea;
+      --shadow: 0 2px 16px rgba(26,18,8,0.08);
+      --radius: 16px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 100px;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1.5px solid var(--border);
+      padding: 20px 24px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    header .logo {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: grid; place-items: center;
+      font-size: 18px;
+    }
+    header h1 {
+      font-family: 'Fraunces', serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    header span {
+      font-size: 12px;
+      color: var(--text2);
+      margin-left: auto;
+      font-weight: 300;
+    }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex;
+      background: var(--surface);
+      border-bottom: 1.5px solid var(--border);
+      padding: 0 24px;
+    }
+    .tab {
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      border-bottom: 2.5px solid transparent;
+      transition: all 0.2s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+    .tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* ── Pages ── */
+    .page { display: none; padding: 24px; max-width: 680px; margin: 0 auto; }
+    .page.active { display: block; }
+
+    /* ── Stats strip ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Fraunces', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .stat-label { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+    /* ── Log cards ── */
+    .log-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 14px;
+      position: relative;
+      transition: box-shadow 0.2s;
+    }
+    .log-card:hover { box-shadow: var(--shadow); }
+    .log-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .log-date {
+      font-family: 'Fraunces', serif;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .log-time { font-size: 12px; color: var(--text2); margin-top: 2px; }
+    .severity-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-light);
+      color: var(--accent);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .log-details { display: grid; gap: 7px; }
+    .log-detail {
+      display: flex;
+      gap: 8px;
+      font-size: 13px;
+      align-items: flex-start;
+    }
+    .log-detail .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+    .log-detail .label { color: var(--text2); min-width: 80px; flex-shrink: 0; }
+    .log-detail .value { color: var(--text); }
+    .tag {
+      display: inline-block;
+      background: var(--surface2);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 11px;
+      margin: 2px 2px 0 0;
+      color: var(--text2);
+    }
+    .tag.relief { background: #e8f5e9; color: var(--accent3); }
+    .tag.no-relief { background: var(--accent-light); color: var(--accent); }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .btn-sm {
+      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text2);
+      transition: all 0.15s;
+    }
+    .btn-sm:hover { background: var(--surface2); }
+    .btn-sm.danger { color: var(--accent); border-color: var(--accent-light); }
+    .btn-sm.danger:hover { background: var(--accent-light); }
+
+    /* ── Empty state ── */
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text2);
+    }
+    .empty .emoji { font-size: 48px; margin-bottom: 12px; }
+    .empty h3 { font-family: 'Fraunces', serif; font-size: 20px; color: var(--text); margin-bottom: 8px; }
+    .empty p { font-size: 14px; line-height: 1.6; }
+
+    /* ── Log Form ── */
+    .form-section {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .form-section h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 15px;
+      margin-bottom: 16px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text2);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input[type="text"], input[type="date"], input[type="time"], input[type="number"], select, textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+      margin-bottom: 14px;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); background: #fff; }
+    textarea { resize: vertical; min-height: 70px; }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* Severity slider */
+    .severity-row { margin-bottom: 14px; }
+    .severity-display {
+      font-family: 'Fraunces', serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: center;
+      margin: 8px 0;
+    }
+    .severity-label { text-align: center; font-size: 13px; color: var(--text2); margin-bottom: 8px; }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      margin-bottom: 4px;
+      height: 6px;
+      border: none;
+      padding: 0;
+      background: none;
+    }
+    .severity-ticks { display: flex; justify-content: space-between; font-size: 11px; color: var(--text2); }
+
+    /* Chips */
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .chip {
+      padding: 7px 14px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      font-size: 13px;
+      cursor: pointer;
+      background: var(--surface);
+      color: var(--text2);
+      transition: all 0.15s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .chip.selected {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .chip:hover:not(.selected) { background: var(--surface2); }
+
+    /* Relief toggle */
+    .relief-toggle { display: flex; gap: 10px; margin-bottom: 14px; }
+    .relief-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      font-size: 13px;
+      cursor: pointer;
+      background: var(--surface);
+      color: var(--text2);
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+      text-align: center;
+    }
+    .relief-btn.yes { background: #e8f5e9; border-color: var(--accent3); color: var(--accent3); }
+    .relief-btn.no  { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+    /* Submit btn */
+    .btn-primary {
+      width: 100%;
+      padding: 16px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      letter-spacing: 0.2px;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-primary:active { transform: scale(0.99); }
+
+    /* ── Modal overlay ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(26,18,8,0.5);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 24px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .modal-header h2 { font-family: 'Fraunces', serif; font-size: 20px; }
+    .btn-close {
+      background: var(--surface2);
+      border: none;
+      border-radius: 8px;
+      width: 32px; height: 32px;
+      cursor: pointer;
+      font-size: 16px;
+      display: grid; place-items: center;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--text);
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 14px;
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 300;
+      white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── Tips page ── */
+    .tip-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+    .tip-card h4 {
+      font-family: 'Fraunces', serif;
+      font-size: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tip-list { list-style: none; display: grid; gap: 6px; }
+    .tip-list li {
+      font-size: 13px;
+      color: var(--text2);
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .tip-list li::before { content: "→"; position: absolute; left: 0; color: var(--accent2); }
+
+    /* Bottom nav */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--surface);
+      border-top: 1.5px solid var(--border);
+      display: flex;
+      padding: 8px 0 12px;
+      z-index: 100;
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      padding: 6px 0;
+      font-size: 11px;
+      color: var(--text2);
+      transition: color 0.15s;
+      background: none;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .nav-item .nav-icon { font-size: 20px; }
+    .nav-item.active { color: var(--accent); }
+
+    /* Filter bar */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .filter-chip {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      font-size: 12px;
+      cursor: pointer;
+      background: var(--surface);
+      color: var(--text2);
+      white-space: nowrap;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+    }
+    .filter-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    .page-title {
+      font-family: 'Fraunces', serif;
+      font-size: 24px;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+    .page-sub { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
+
+    @media (max-width: 420px) {
+      .row-2 { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🧠</div>
+  <h1>Headache Diary</h1>
+  <span id="today-date"></span>
+</header>
+
+<!-- Pages -->
+<div class="page active" id="page-home">
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num" id="stat-total">0</div>
+      <div class="stat-label">Total Episodes</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="stat-avg">–</div>
+      <div class="stat-label">Avg Severity</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="stat-this-month">0</div>
+      <div class="stat-label">This Month</div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-chip active" onclick="setFilter('all', this)">All</button>
+    <button class="filter-chip" onclick="setFilter('7', this)">Last 7 days</button>
+    <button class="filter-chip" onclick="setFilter('30', this)">Last 30 days</button>
+    <button class="filter-chip" onclick="setFilter('severe', this)">Severe (7+)</button>
+  </div>
+
+  <div id="logs-container"></div>
+</div>
+
+<div class="page" id="page-log">
+  <p class="page-title">Log Episode</p>
+  <p class="page-sub">Record a headache episode. All fields except date & severity are optional.</p>
+
+  <div class="form-section">
+    <h3>📅 When did it happen?</h3>
+    <div class="row-2">
+      <div>
+        <label>Date</label>
+        <input type="date" id="f-date" />
+      </div>
+      <div>
+        <label>Time</label>
+        <input type="time" id="f-time" />
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3>💢 Pain Severity</h3>
+    <div class="severity-row">
+      <div class="severity-display" id="sev-display">5</div>
+      <div class="severity-label" id="sev-label">Moderate</div>
+      <input type="range" min="1" max="10" value="5" id="f-severity" oninput="updateSeverity(this.value)" />
+      <div class="severity-ticks">
+        <span>1 Mild</span><span>5 Moderate</span><span>10 Severe</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3>🔍 Pain Type & Location</h3>
+    <label>Type of headache</label>
+    <div class="chips" id="chips-type">
+      <button class="chip" onclick="toggleChip(this,'type')">Throbbing / Pulsing</button>
+      <button class="chip" onclick="toggleChip(this,'type')">Pressure / Squeezing</button>
+      <button class="chip" onclick="toggleChip(this,'type')">Stabbing / Sharp</button>
+      <button class="chip" onclick="toggleChip(this,'type')">Dull / Aching</button>
+      <button class="chip" onclick="toggleChip(this,'type')">Burning</button>
+      <button class="chip" onclick="toggleChip(this,'type')">Tightening / Band-like</button>
+    </div>
+    <label>Location</label>
+    <div class="chips" id="chips-location">
+      <button class="chip" onclick="toggleChip(this,'location')">Forehead</button>
+      <button class="chip" onclick="toggleChip(this,'location')">Left side</button>
+      <button class="chip" onclick="toggleChip(this,'location')">Right side</button>
+      <button class="chip" onclick="toggleChip(this,'location')">Both sides</button>
+      <button class="chip" onclick="toggleChip(this,'location')">Back of head</button>
+      <button class="chip" onclick="toggleChip(this,'location')">Behind eyes</button>
+      <button class="chip" onclick="toggleChip(this,'location')">Top of head</button>
+      <button class="chip" onclick="toggleChip(this,'location')">Neck / Base</button>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3>⏱ Duration</h3>
+    <div class="row-2">
+      <div>
+        <label>Hours</label>
+        <input type="number" id="f-dur-h" min="0" max="72" placeholder="e.g. 2" />
+      </div>
+      <div>
+        <label>Minutes</label>
+        <input type="number" id="f-dur-m" min="0" max="59" placeholder="e.g. 30" />
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3>😵 Other Symptoms</h3>
+    <div class="chips" id="chips-sx">
+      <button class="chip" onclick="toggleChip(this,'sx')">Nausea</button>
+      <button class="chip" onclick="toggleChip(this,'sx')">Vomiting</button>
+      <button class="chip" onclick="toggleChip(this,'sx')">Light sensitivity</button>
+      <button class="chip" onclick="toggleChip(this,'sx')">Sound sensitivity</button>
+      <button class="chip" onclick="toggleChip(this,'sx')">Aura / Vision changes</button>
+      <button class="chip" onclick="toggleChip(this,'sx')">Dizziness</button>
+      <button class="chip" onclick="toggleChip(this,'sx')">Neck stiffness</button>
+      <button class="chip" onclick="toggleChip(this,'sx')">Fatigue</button>
+      <button class="chip" onclick="toggleChip(this,'sx')">Brain fog</button>
+      <button class="chip" onclick="toggleChip(this,'sx')">Nasal congestion</button>
+      <button class="chip" onclick="toggleChip(this,'sx')">Eye redness / tearing</button>
+    </div>
+    <label>Other notes on symptoms</label>
+    <textarea id="f-sx-notes" placeholder="Describe anything else you felt..."></textarea>
+  </div>
+
+  <div class="form-section">
+    <h3>🍽 Food & Drink Before Episode</h3>
+    <label>Select possible triggers</label>
+    <div class="chips" id="chips-food">
+      <button class="chip" onclick="toggleChip(this,'food')">Coffee / Caffeine</button>
+      <button class="chip" onclick="toggleChip(this,'food')">Alcohol</button>
+      <button class="chip" onclick="toggleChip(this,'food')">Chocolate</button>
+      <button class="chip" onclick="toggleChip(this,'food')">Cheese / Dairy</button>
+      <button class="chip" onclick="toggleChip(this,'food')">Processed / Cured meat</button>
+      <button class="chip" onclick="toggleChip(this,'food')">MSG / Salty food</button>
+      <button class="chip" onclick="toggleChip(this,'food')">Skipped meal</button>
+      <button class="chip" onclick="toggleChip(this,'food')">Insufficient water</button>
+      <button class="chip" onclick="toggleChip(this,'food')">Citrus fruits</button>
+      <button class="chip" onclick="toggleChip(this,'food')">Artificial sweeteners</button>
+    </div>
+    <label>Food notes (what you ate)</label>
+    <textarea id="f-food-notes" placeholder="e.g. Had Jollibee for lunch, 2 cups of coffee..."></textarea>
+  </div>
+
+  <div class="form-section">
+    <h3>⚡ Possible Triggers</h3>
+    <div class="chips" id="chips-triggers">
+      <button class="chip" onclick="toggleChip(this,'triggers')">Stress</button>
+      <button class="chip" onclick="toggleChip(this,'triggers')">Lack of sleep</button>
+      <button class="chip" onclick="toggleChip(this,'triggers')">Too much sleep</button>
+      <button class="chip" onclick="toggleChip(this,'triggers')">Bright lights</button>
+      <button class="chip" onclick="toggleChip(this,'triggers')">Loud noise</button>
+      <button class="chip" onclick="toggleChip(this,'triggers')">Strong smells</button>
+      <button class="chip" onclick="toggleChip(this,'triggers')">Weather change</button>
+      <button class="chip" onclick="toggleChip(this,'triggers')">Screen time</button>
+      <button class="chip" onclick="toggleChip(this,'triggers')">Physical exertion</button>
+      <button class="chip" onclick="toggleChip(this,'triggers')">Hormonal / Menstrual</button>
+      <button class="chip" onclick="toggleChip(this,'triggers')">Travel / Motion</button>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3>💊 Medication</h3>
+    <label>Medication taken</label>
+    <div class="chips" id="chips-meds">
+      <button class="chip" onclick="toggleChip(this,'meds')">Paracetamol</button>
+      <button class="chip" onclick="toggleChip(this,'meds')">Ibuprofen</button>
+      <button class="chip" onclick="toggleChip(this,'meds')">Mefenamic acid</button>
+      <button class="chip" onclick="toggleChip(this,'meds')">Aspirin</button>
+      <button class="chip" onclick="toggleChip(this,'meds')">Naproxen</button>
+      <button class="chip" onclick="toggleChip(this,'meds')">Triptans</button>
+      <button class="chip" onclick="toggleChip(this,'meds')">None taken</button>
+    </div>
+    <label>Other medication</label>
+    <input type="text" id="f-med-other" placeholder="e.g. Prescription name, dose..." />
+    <label>Did medication give relief?</label>
+    <div class="relief-toggle">
+      <button class="relief-btn" id="relief-yes" onclick="setRelief('yes')">✅ Yes, with relief</button>
+      <button class="relief-btn" id="relief-partial" onclick="setRelief('partial')">🔶 Partial relief</button>
+      <button class="relief-btn" id="relief-no" onclick="setRelief('no')">❌ No relief</button>
+    </div>
+    <div id="relief-na" style="font-size:13px;color:var(--text2);margin-bottom:14px;">No medication selected.</div>
+  </div>
+
+  <div class="form-section">
+    <h3>📝 Additional Notes</h3>
+    <textarea id="f-notes" placeholder="Anything else your doctor should know — what you were doing, how you felt before, sleep quality, stress level..."></textarea>
+  </div>
+
+  <button class="btn-primary" onclick="saveLog()">💾 Save Episode</button>
+  <div style="height:16px;"></div>
+</div>
+
+<div class="page" id="page-tips">
+  <p class="page-title">Doctor's Tips</p>
+  <p class="page-sub">Suggestions on what to log and track for your chronic headache diary.</p>
+
+  <div class="tip-card">
+    <h4>📋 Why These Details Matter</h4>
+    <ul class="tip-list">
+      <li>Patterns across episodes help your doctor identify headache type (migraine, tension, cluster, etc.)</li>
+      <li>Tracking triggers helps you and your doctor prevent future episodes</li>
+      <li>Medication logs show what's working and prevent overuse headache</li>
+    </ul>
+  </div>
+
+  <div class="tip-card">
+    <h4>🍽 Food Triggers to Watch</h4>
+    <ul class="tip-list">
+      <li>Log everything you ate 24 hours before a headache starts</li>
+      <li>Common triggers: aged cheese, chocolate, alcohol (especially red wine), processed meats, MSG</li>
+      <li>Skipping meals or dehydration are very common triggers — log water intake</li>
+      <li>Caffeine: both too much and withdrawal can cause headaches</li>
+    </ul>
+  </div>
+
+  <div class="tip-card">
+    <h4>😴 Sleep & Lifestyle</h4>
+    <ul class="tip-list">
+      <li>Note your sleep hours — both too little and too much can trigger headaches</li>
+      <li>Track your stress level (even just low/medium/high)</li>
+      <li>Note any screen time before headache onset</li>
+      <li>Physical activity, posture, and eye strain are also common factors</li>
+    </ul>
+  </div>
+
+  <div class="tip-card">
+    <h4>💊 Medication Tracking</h4>
+    <ul class="tip-list">
+      <li>Always note the exact name and dose of medication taken</li>
+      <li>Using pain relievers more than 2–3x/week can cause "rebound" (medication overuse) headaches</li>
+      <li>Note how long after taking medication you felt relief (or didn't)</li>
+      <li>Bring this diary to every doctor visit</li>
+    </ul>
+  </div>
+
+  <div class="tip-card">
+    <h4>🔴 When to Seek Immediate Help</h4>
+    <ul class="tip-list">
+      <li>"Thunderclap" headache — sudden, worst headache of your life</li>
+      <li>Headache with fever, stiff neck, confusion, or rash</li>
+      <li>Headache after head injury</li>
+      <li>New headache after age 50</li>
+      <li>Headache with vision, speech, or limb problems</li>
+    </ul>
+  </div>
+
+  <div class="tip-card">
+    <h4>📤 Sharing With Your Doctor</h4>
+    <ul class="tip-list">
+      <li>Use the Export button on your Home tab to download your log as a text summary</li>
+      <li>Bring to every consult — even photos of this diary app screen help</li>
+      <li>Mention how headaches affect your daily activities (work, sleep, chores)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Edit Episode</h2>
+      <button class="btn-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+  <button class="nav-item active" id="nav-home" onclick="switchPage('home')">
+    <span class="nav-icon">📋</span>My Logs
+  </button>
+  <button class="nav-item" id="nav-log" onclick="switchPage('log')">
+    <span class="nav-icon">➕</span>Log Episode
+  </button>
+  <button class="nav-item" id="nav-tips" onclick="switchPage('tips')">
+    <span class="nav-icon">💡</span>Doctor Tips
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let logs = JSON.parse(localStorage.getItem('hd-logs') || '[]');
+let chips = { type: [], location: [], sx: [], food: [], triggers: [], meds: [] };
+let relief = null;
+let currentFilter = 'all';
+let editingId = null;
+
+const SEVERITY_LABELS = ['','Minimal','Very Mild','Mild','Mild-Moderate','Moderate','Moderate','Moderate-Severe','Severe','Very Severe','Worst Possible'];
+
+// ── Init ───────────────────────────────────────────────────────────────────
+function init() {
+  const now = new Date();
+  document.getElementById('today-date').textContent = now.toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' });
+  const dateEl = document.getElementById('f-date');
+  const timeEl = document.getElementById('f-time');
+  dateEl.value = now.toISOString().slice(0,10);
+  timeEl.value = now.toTimeString().slice(0,5);
+  renderLogs();
+  updateStats();
+}
+
+// ── Tabs ───────────────────────────────────────────────────────────────────
+function switchPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.getElementById('nav-'+id).classList.add('active');
+}
+
+// ── Severity ───────────────────────────────────────────────────────────────
+function updateSeverity(val) {
+  document.getElementById('sev-display').textContent = val;
+  document.getElementById('sev-label').textContent = SEVERITY_LABELS[val] || '';
+}
+
+// ── Chips ──────────────────────────────────────────────────────────────────
+function toggleChip(el, group) {
+  el.classList.toggle('selected');
+  const text = el.textContent;
+  if (chips[group].includes(text)) {
+    chips[group] = chips[group].filter(x => x !== text);
+  } else {
+    chips[group].push(text);
+  }
+}
+
+// ── Relief ─────────────────────────────────────────────────────────────────
+function setRelief(val) {
+  relief = val;
+  document.getElementById('relief-yes').className = 'relief-btn' + (val==='yes' ? ' yes' : '');
+  document.getElementById('relief-partial').className = 'relief-btn' + (val==='partial' ? ' yes' : '');
+  document.getElementById('relief-no').className = 'relief-btn' + (val==='no' ? ' no' : '');
+}
+
+// ── Save ───────────────────────────────────────────────────────────────────
+function saveLog() {
+  const date = document.getElementById('f-date').value;
+  const time = document.getElementById('f-time').value;
+  if (!date) { showToast('⚠️ Please set a date.'); return; }
+
+  const entry = {
+    id: editingId || Date.now().toString(),
+    date, time,
+    severity: parseInt(document.getElementById('f-severity').value),
+    painType: [...chips.type],
+    location: [...chips.location],
+    durH: document.getElementById('f-dur-h').value,
+    durM: document.getElementById('f-dur-m').value,
+    sx: [...chips.sx],
+    sxNotes: document.getElementById('f-sx-notes').value,
+    food: [...chips.food],
+    foodNotes: document.getElementById('f-food-notes').value,
+    triggers: [...chips.triggers],
+    meds: [...chips.meds],
+    medOther: document.getElementById('f-med-other').value,
+    relief: relief,
+    notes: document.getElementById('f-notes').value,
+    savedAt: new Date().toISOString()
+  };
+
+  if (editingId) {
+    logs = logs.map(l => l.id === editingId ? entry : l);
+    editingId = null;
+  } else {
+    logs.unshift(entry);
+  }
+
+  persist();
+  resetForm();
+  showToast('✅ Episode saved!');
+  switchPage('home');
+}
+
+function persist() {
+  localStorage.setItem('hd-logs', JSON.stringify(logs));
+  renderLogs();
+  updateStats();
+}
+
+function resetForm() {
+  const now = new Date();
+  document.getElementById('f-date').value = now.toISOString().slice(0,10);
+  document.getElementById('f-time').value = now.toTimeString().slice(0,5);
+  document.getElementById('f-severity').value = 5;
+  updateSeverity(5);
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  chips = { type: [], location: [], sx: [], food: [], triggers: [], meds: [] };
+  ['f-dur-h','f-dur-m','f-sx-notes','f-food-notes','f-med-other','f-notes'].forEach(id => document.getElementById(id).value = '');
+  setRelief(null);
+  relief = null;
+}
+
+// ── Filter ─────────────────────────────────────────────────────────────────
+function setFilter(val, el) {
+  currentFilter = val;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderLogs();
+}
+
+function getFiltered() {
+  const now = new Date();
+  return logs.filter(l => {
+    if (currentFilter === 'all') return true;
+    if (currentFilter === 'severe') return l.severity >= 7;
+    const d = parseInt(currentFilter);
+    const ld = new Date(l.date);
+    return (now - ld) / 86400000 <= d;
+  });
+}
+
+// ── Render logs ────────────────────────────────────────────────────────────
+function renderLogs() {
+  const container = document.getElementById('logs-container');
+  const filtered = getFiltered();
+  if (!filtered.length) {
+    container.innerHTML = `<div class="empty"><div class="emoji">📓</div><h3>No episodes yet</h3><p>Tap "Log Episode" below to record your first headache episode.</p></div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(l => {
+    const dateStr = new Date(l.date + 'T00:00').toLocaleDateString('en-PH', { weekday:'short', month:'long', day:'numeric', year:'numeric' });
+    const sCol = l.severity >= 8 ? '#c0392b' : l.severity >= 5 ? '#e67e22' : '#27ae60';
+    const durText = (l.durH || l.durM) ? `${l.durH||0}h ${l.durM||0}m` : 'Not recorded';
+
+    const reliefTag = l.relief === 'yes' ? '<span class="tag relief">✅ With relief</span>' :
+                      l.relief === 'partial' ? '<span class="tag">🔶 Partial relief</span>' :
+                      l.relief === 'no' ? '<span class="tag no-relief">❌ No relief</span>' : '';
+
+    const chips = arr => arr.length ? arr.map(x => `<span class="tag">${x}</span>`).join('') : '<span style="color:var(--text2);font-size:12px;">—</span>';
+
+    return `<div class="log-card" id="card-${l.id}">
+      <div class="log-card-header">
+        <div>
+          <div class="log-date">${dateStr}</div>
+          <div class="log-time">${l.time ? '🕐 ' + l.time : 'Time not set'}</div>
+        </div>
+        <div class="severity-badge" style="background:${sCol}18;color:${sCol}">
+          💢 ${l.severity}/10
+        </div>
+      </div>
+      <div class="log-details">
+        ${l.painType.length ? `<div class="log-detail"><span class="icon">🔍</span><span class="label">Type</span><span class="value">${chips(l.painType)}</span></div>` : ''}
+        ${l.location.length ? `<div class="log-detail"><span class="icon">📍</span><span class="label">Location</span><span class="value">${chips(l.location)}</span></div>` : ''}
+        <div class="log-detail"><span class="icon">⏱</span><span class="label">Duration</span><span class="value">${durText}</span></div>
+        ${l.sx.length ? `<div class="log-detail"><span class="icon">😵</span><span class="label">Symptoms</span><span class="value">${chips(l.sx)}</span></div>` : ''}
+        ${l.sxNotes ? `<div class="log-detail"><span class="icon">📝</span><span class="label">Sx notes</span><span class="value" style="font-size:12px;color:var(--text2)">${l.sxNotes}</span></div>` : ''}
+        ${l.food.length || l.foodNotes ? `<div class="log-detail"><span class="icon">🍽</span><span class="label">Food</span><span class="value">${chips(l.food)}${l.foodNotes ? `<div style="font-size:12px;color:var(--text2);margin-top:4px">${l.foodNotes}</div>` : ''}</span></div>` : ''}
+        ${l.triggers.length ? `<div class="log-detail"><span class="icon">⚡</span><span class="label">Triggers</span><span class="value">${chips(l.triggers)}</span></div>` : ''}
+        ${l.meds.length || l.medOther ? `<div class="log-detail"><span class="icon">💊</span><span class="label">Medication</span><span class="value">${chips(l.meds)}${l.medOther ? `<span class="tag">${l.medOther}</span>` : ''}${reliefTag}</span></div>` : ''}
+        ${l.notes ? `<div class="log-detail"><span class="icon">🗒</span><span class="label">Notes</span><span class="value" style="font-size:12px;color:var(--text2)">${l.notes}</span></div>` : ''}
+      </div>
+      <div class="card-actions">
+        <button class="btn-sm" onclick="editLog('${l.id}')">✏️ Edit</button>
+        <button class="btn-sm danger" onclick="deleteLog('${l.id}')">🗑 Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Stats ──────────────────────────────────────────────────────────────────
+function updateStats() {
+  document.getElementById('stat-total').textContent = logs.length;
+  const avg = logs.length ? (logs.reduce((s,l) => s+l.severity, 0) / logs.length).toFixed(1) : '–';
+  document.getElementById('stat-avg').textContent = avg;
+  const now = new Date();
+  const thisMonth = logs.filter(l => {
+    const d = new Date(l.date);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length;
+  document.getElementById('stat-this-month').textContent = thisMonth;
+}
+
+// ── Edit ───────────────────────────────────────────────────────────────────
+function editLog(id) {
+  const l = logs.find(x => x.id === id);
+  if (!l) return;
+  editingId = id;
+
+  // Populate form
+  document.getElementById('f-date').value = l.date;
+  document.getElementById('f-time').value = l.time || '';
+  document.getElementById('f-severity').value = l.severity;
+  updateSeverity(l.severity);
+  chips = {
+    type: [...l.painType],
+    location: [...l.location],
+    sx: [...l.sx],
+    food: [...l.food],
+    triggers: [...l.triggers],
+    meds: [...l.meds]
+  };
+  // Re-highlight chips
+  document.querySelectorAll('.chip').forEach(c => {
+    c.classList.remove('selected');
+    const group = c.parentElement.id.replace('chips-','');
+    if (chips[group] && chips[group].includes(c.textContent)) c.classList.add('selected');
+  });
+  document.getElementById('f-dur-h').value = l.durH || '';
+  document.getElementById('f-dur-m').value = l.durM || '';
+  document.getElementById('f-sx-notes').value = l.sxNotes || '';
+  document.getElementById('f-food-notes').value = l.foodNotes || '';
+  document.getElementById('f-med-other').value = l.medOther || '';
+  document.getElementById('f-notes').value = l.notes || '';
+  setRelief(l.relief);
+  relief = l.relief;
+
+  switchPage('log');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  showToast('📝 Editing episode — update and save');
+}
+
+// ── Delete ─────────────────────────────────────────────────────────────────
+function deleteLog(id) {
+  if (!confirm('Delete this episode?')) return;
+  logs = logs.filter(l => l.id !== id);
+  persist();
+  showToast('🗑 Deleted');
+}
+
+// ── Modal ──────────────────────────────────────────────────────────────────
+function closeModal() { document.getElementById('edit-modal').classList.remove('open'); }
+
+// ── Toast ──────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+init();
+</script>
+</body>
+</html>
