@@ -1,609 +1,310 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Headache Diary</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#c0392b" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Headache Diary" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Headache Diary</title>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#6b3a2a"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Head Diary"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --clay:#6b3a2a;--clay-light:#8b5a47;--clay-pale:#fdf3ee;
+  --sand:#c9a87c;--sand-light:#e8d5b7;--sand-pale:#faf6f0;
+  --moss:#4a5e3a;--moss-light:#6b7f5a;--moss-pale:#eef2ea;
+  --slate:#3d4a3e;--bark:#2c1f15;
+  --bg:#faf6f0;--surface:#fff;--surface2:#f5ede3;
+  --border:#e2d0bc;--text:#2c1f15;--text2:#7a5c45;
+  --accent:var(--clay);--accent-light:#fdecea;
+  --r:16px;--shadow:0 2px 20px rgba(44,31,21,0.1);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:90px}
 
-    :root {
-      --bg: #faf7f2;
-      --surface: #ffffff;
-      --surface2: #f3ede3;
-      --border: #e8dfd0;
-      --text: #1a1208;
-      --text2: #6b5c45;
-      --accent: #c0392b;
-      --accent2: #e8a87c;
-      --accent3: #2c6e49;
-      --accent-light: #fdecea;
-      --shadow: 0 2px 16px rgba(26,18,8,0.08);
-      --radius: 16px;
-    }
+/* ── HEADER ── */
+header{background:var(--clay);padding:16px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(44,31,21,0.2)}
+.hdr-logo{width:38px;height:38px;background:rgba(255,255,255,0.15);border-radius:10px;display:grid;place-items:center;font-size:20px}
+.hdr-title{font-family:'Playfair Display',serif;color:#fff;font-size:20px;font-weight:700;letter-spacing:-0.3px}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,0.7);margin-left:auto}
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding-bottom: 100px;
-    }
+/* ── STOPWATCH BANNER ── */
+.stopwatch-bar{background:var(--surface);border-bottom:2px solid var(--border);padding:14px 20px;display:flex;align-items:center;gap:14px}
+.sw-display{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--clay);min-width:100px;letter-spacing:1px}
+.sw-display.running{color:#c0392b;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.sw-btn{padding:10px 20px;border-radius:10px;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s}
+.sw-start{background:var(--clay);color:#fff}
+.sw-stop{background:#c0392b;color:#fff}
+.sw-reset{background:var(--surface2);color:var(--text2);border:1.5px solid var(--border)}
+.sw-label{font-size:11px;color:var(--text2);margin-top:2px}
+.sw-save-btn{margin-left:auto;background:var(--moss);color:#fff;padding:8px 16px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
 
-    /* ── Header ── */
-    header {
-      background: var(--surface);
-      border-bottom: 1.5px solid var(--border);
-      padding: 20px 24px 16px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    header .logo {
-      width: 36px; height: 36px;
-      background: var(--accent);
-      border-radius: 10px;
-      display: grid; place-items: center;
-      font-size: 18px;
-    }
-    header h1 {
-      font-family: 'Fraunces', serif;
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
-    header span {
-      font-size: 12px;
-      color: var(--text2);
-      margin-left: auto;
-      font-weight: 300;
-    }
+/* ── PAGES ── */
+.page{display:none;padding:20px;max-width:700px;margin:0 auto}
+.page.active{display:block}
+.page-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:4px;color:var(--bark)}
+.page-sub{font-size:13px;color:var(--text2);margin-bottom:20px}
 
-    /* ── Tabs ── */
-    .tabs {
-      display: flex;
-      background: var(--surface);
-      border-bottom: 1.5px solid var(--border);
-      padding: 0 24px;
-    }
-    .tab {
-      padding: 12px 20px;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text2);
-      cursor: pointer;
-      border-bottom: 2.5px solid transparent;
-      transition: all 0.2s;
-      background: none;
-      border-top: none;
-      border-left: none;
-      border-right: none;
-    }
-    .tab.active {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-    }
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.stat{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:12px;text-align:center}
+.stat-num{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--clay)}
+.stat-label{font-size:10px;color:var(--text2);margin-top:2px}
 
-    /* ── Pages ── */
-    .page { display: none; padding: 24px; max-width: 680px; margin: 0 auto; }
-    .page.active { display: block; }
+/* ── LOG CARDS ── */
+.log-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;transition:box-shadow 0.2s}
+.log-card:hover{box-shadow:var(--shadow)}
+.log-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.log-date{font-family:'Playfair Display',serif;font-size:15px;font-weight:500}
+.log-time{font-size:11px;color:var(--text2);margin-top:2px}
+.sev-badge{border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600}
+.log-details{display:grid;gap:6px}
+.log-detail{display:flex;gap:8px;font-size:12px;align-items:flex-start}
+.ld-icon{font-size:13px;flex-shrink:0;margin-top:1px}
+.ld-label{color:var(--text2);min-width:75px;flex-shrink:0;font-size:11px;text-transform:uppercase;letter-spacing:0.3px;padding-top:1px}
+.tag{display:inline-block;background:var(--surface2);border-radius:5px;padding:2px 7px;font-size:10px;margin:2px 2px 0 0;color:var(--text2)}
+.tag.g{background:var(--moss-pale);color:var(--moss)}
+.tag.r{background:#fdecea;color:#c0392b}
+.card-actions{display:flex;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
+.btn-sm{font-size:11px;padding:5px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;color:var(--text2);font-family:'Inter',sans-serif;transition:all 0.15s}
+.btn-sm:hover{background:var(--surface2)}
+.btn-sm.danger{color:#c0392b;border-color:#fdecea}
 
-    /* ── Stats strip ── */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-    .stat {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 14px;
-      padding: 14px 16px;
-      text-align: center;
-    }
-    .stat-num {
-      font-family: 'Fraunces', serif;
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--accent);
-    }
-    .stat-label { font-size: 11px; color: var(--text2); margin-top: 2px; }
+/* ── FORM SECTIONS ── */
+.form-section{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.form-section h3{font-family:'Playfair Display',serif;font-size:15px;margin-bottom:14px;color:var(--bark);display:flex;align-items:center;gap:8px}
+label{display:block;font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px}
+input[type="text"],input[type="date"],input[type="time"],input[type="number"],select,textarea{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);outline:none;transition:border-color 0.15s;margin-bottom:12px}
+input:focus,select:focus,textarea:focus{border-color:var(--clay);background:#fff}
+textarea{resize:vertical;min-height:65px}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
-    /* ── Log cards ── */
-    .log-card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px;
-      margin-bottom: 14px;
-      position: relative;
-      transition: box-shadow 0.2s;
-    }
-    .log-card:hover { box-shadow: var(--shadow); }
-    .log-card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-    .log-date {
-      font-family: 'Fraunces', serif;
-      font-size: 16px;
-      font-weight: 500;
-    }
-    .log-time { font-size: 12px; color: var(--text2); margin-top: 2px; }
-    .severity-badge {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--accent-light);
-      color: var(--accent);
-      border-radius: 20px;
-      padding: 4px 12px;
-      font-size: 13px;
-      font-weight: 500;
-    }
-    .log-details { display: grid; gap: 7px; }
-    .log-detail {
-      display: flex;
-      gap: 8px;
-      font-size: 13px;
-      align-items: flex-start;
-    }
-    .log-detail .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
-    .log-detail .label { color: var(--text2); min-width: 80px; flex-shrink: 0; }
-    .log-detail .value { color: var(--text); }
-    .tag {
-      display: inline-block;
-      background: var(--surface2);
-      border-radius: 6px;
-      padding: 2px 8px;
-      font-size: 11px;
-      margin: 2px 2px 0 0;
-      color: var(--text2);
-    }
-    .tag.relief { background: #e8f5e9; color: var(--accent3); }
-    .tag.no-relief { background: var(--accent-light); color: var(--accent); }
+/* severity slider */
+.sev-display{font-family:'Playfair Display',serif;font-size:40px;font-weight:700;color:var(--clay);text-align:center;margin:6px 0}
+.sev-lbl{text-align:center;font-size:12px;color:var(--text2);margin-bottom:8px}
+input[type="range"]{width:100%;accent-color:var(--clay);height:6px;border:none;padding:0;background:none;margin-bottom:4px}
+.sev-ticks{display:flex;justify-content:space-between;font-size:10px;color:var(--text2)}
 
-    .card-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
-    }
-    .btn-sm {
-      font-size: 12px;
-      padding: 6px 14px;
-      border-radius: 8px;
-      border: 1.5px solid var(--border);
-      background: var(--surface);
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      color: var(--text2);
-      transition: all 0.15s;
-    }
-    .btn-sm:hover { background: var(--surface2); }
-    .btn-sm.danger { color: var(--accent); border-color: var(--accent-light); }
-    .btn-sm.danger:hover { background: var(--accent-light); }
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+.chip{padding:6px 13px;border-radius:20px;border:1.5px solid var(--border);font-size:12px;cursor:pointer;background:var(--surface);color:var(--text2);font-family:'Inter',sans-serif;transition:all 0.15s}
+.chip.sel{background:var(--clay);border-color:var(--clay);color:#fff}
+.chip:hover:not(.sel){background:var(--surface2)}
 
-    /* ── Empty state ── */
-    .empty {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text2);
-    }
-    .empty .emoji { font-size: 48px; margin-bottom: 12px; }
-    .empty h3 { font-family: 'Fraunces', serif; font-size: 20px; color: var(--text); margin-bottom: 8px; }
-    .empty p { font-size: 14px; line-height: 1.6; }
+/* relief */
+.relief-row{display:flex;gap:8px;margin-bottom:12px}
+.relief-btn{flex:1;padding:9px;border-radius:10px;border:1.5px solid var(--border);font-size:12px;cursor:pointer;background:var(--surface);color:var(--text2);font-family:'Inter',sans-serif;transition:all 0.15s;text-align:center}
+.relief-btn.y{background:var(--moss-pale);border-color:var(--moss);color:var(--moss)}
+.relief-btn.n{background:#fdecea;border-color:#c0392b;color:#c0392b}
 
-    /* ── Log Form ── */
-    .form-section {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      margin-bottom: 16px;
-    }
-    .form-section h3 {
-      font-family: 'Fraunces', serif;
-      font-size: 15px;
-      margin-bottom: 16px;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text2);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    input[type="text"], input[type="date"], input[type="time"], input[type="number"], select, textarea {
-      width: 100%;
-      padding: 11px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      font-size: 14px;
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.15s;
-      margin-bottom: 14px;
-    }
-    input:focus, select:focus, textarea:focus { border-color: var(--accent); background: #fff; }
-    textarea { resize: vertical; min-height: 70px; }
+/* primary btn */
+.btn-primary{width:100%;padding:15px;background:var(--clay);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.15s;letter-spacing:0.2px}
+.btn-primary:hover{background:var(--clay-light)}
 
-    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+/* print btn */
+.btn-print{width:100%;padding:12px;background:var(--surface);color:var(--clay);border:2px dashed var(--clay);border-radius:12px;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;margin-bottom:14px;transition:all 0.15s}
+.btn-print:hover{background:var(--clay-pale)}
 
-    /* Severity slider */
-    .severity-row { margin-bottom: 14px; }
-    .severity-display {
-      font-family: 'Fraunces', serif;
-      font-size: 36px;
-      font-weight: 700;
-      color: var(--accent);
-      text-align: center;
-      margin: 8px 0;
-    }
-    .severity-label { text-align: center; font-size: 13px; color: var(--text2); margin-bottom: 8px; }
-    input[type="range"] {
-      width: 100%;
-      accent-color: var(--accent);
-      margin-bottom: 4px;
-      height: 6px;
-      border: none;
-      padding: 0;
-      background: none;
-    }
-    .severity-ticks { display: flex; justify-content: space-between; font-size: 11px; color: var(--text2); }
+/* filter */
+.filter-bar{display:flex;gap:7px;margin-bottom:18px;overflow-x:auto;padding-bottom:4px}
+.filter-chip{padding:5px 13px;border-radius:20px;border:1.5px solid var(--border);font-size:11px;cursor:pointer;background:var(--surface);color:var(--text2);white-space:nowrap;font-family:'Inter',sans-serif;transition:all 0.15s}
+.filter-chip.active{background:var(--clay);border-color:var(--clay);color:#fff}
 
-    /* Chips */
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-    .chip {
-      padding: 7px 14px;
-      border-radius: 20px;
-      border: 1.5px solid var(--border);
-      font-size: 13px;
-      cursor: pointer;
-      background: var(--surface);
-      color: var(--text2);
-      transition: all 0.15s;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .chip.selected {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
-    .chip:hover:not(.selected) { background: var(--surface2); }
+/* empty */
+.empty{text-align:center;padding:50px 20px;color:var(--text2)}
+.empty .emoji{font-size:44px;margin-bottom:10px}
+.empty h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--text);margin-bottom:6px}
 
-    /* Relief toggle */
-    .relief-toggle { display: flex; gap: 10px; margin-bottom: 14px; }
-    .relief-btn {
-      flex: 1;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1.5px solid var(--border);
-      font-size: 13px;
-      cursor: pointer;
-      background: var(--surface);
-      color: var(--text2);
-      font-family: 'DM Sans', sans-serif;
-      transition: all 0.15s;
-      text-align: center;
-    }
-    .relief-btn.yes { background: #e8f5e9; border-color: var(--accent3); color: var(--accent3); }
-    .relief-btn.no  { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+/* ── 3D HEAD CANVAS ── */
+.head-canvas-wrap{position:relative;width:100%;height:320px;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#f5ede3,#e8d5b7);border:1.5px solid var(--border);cursor:grab;touch-action:none;user-select:none}
+.head-canvas-wrap:active{cursor:grabbing}
+#headCanvas{width:100%;height:100%;display:block}
+.head-hint{text-align:center;font-size:11px;color:var(--text2);margin-top:6px;margin-bottom:8px}
+.pain-dot{position:absolute;width:16px;height:16px;border-radius:50%;background:#c0392b;border:2.5px solid #fff;box-shadow:0 1px 6px rgba(192,57,43,0.5);transform:translate(-50%,-50%);pointer-events:none;animation:dotpop 0.2s ease}
+@keyframes dotpop{0%{transform:translate(-50%,-50%) scale(0)}100%{transform:translate(-50%,-50%) scale(1)}}
+.selected-pain-zones{margin-top:8px}
 
-    /* Submit btn */
-    .btn-primary {
-      width: 100%;
-      padding: 16px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 500;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
-      letter-spacing: 0.2px;
-    }
-    .btn-primary:hover { opacity: 0.9; }
-    .btn-primary:active { transform: scale(0.99); }
+/* ── SLEEP POSITIONS ── */
+.sleep-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.sleep-card{border:2px solid var(--border);border-radius:12px;padding:10px 6px;cursor:pointer;text-align:center;transition:all 0.15s;background:var(--surface)}
+.sleep-card:hover{background:var(--surface2)}
+.sleep-card.sel{border-color:var(--clay);background:var(--clay-pale)}
+.sleep-card svg{width:60px;height:60px;margin-bottom:4px}
+.sleep-card span{font-size:10px;color:var(--text2);display:block}
+.sleep-card.sel span{color:var(--clay);font-weight:600}
 
-    /* ── Modal overlay ── */
-    .modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(26,18,8,0.5);
-      z-index: 200;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--surface);
-      border-radius: 20px;
-      padding: 24px;
-      width: 100%;
-      max-width: 500px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-    .modal-header h2 { font-family: 'Fraunces', serif; font-size: 20px; }
-    .btn-close {
-      background: var(--surface2);
-      border: none;
-      border-radius: 8px;
-      width: 32px; height: 32px;
-      cursor: pointer;
-      font-size: 16px;
-      display: grid; place-items: center;
-    }
+/* ── ACTIVITY LOG ── */
+.activity-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.act-chip{padding:8px 10px;border-radius:10px;border:1.5px solid var(--border);font-size:12px;cursor:pointer;background:var(--surface);color:var(--text2);font-family:'Inter',sans-serif;transition:all 0.15s;display:flex;align-items:center;gap:6px}
+.act-chip.sel{background:var(--moss-pale);border-color:var(--moss);color:var(--moss-light)}
+.act-chip:hover:not(.sel){background:var(--surface2)}
 
-    /* ── Toast ── */
-    .toast {
-      position: fixed;
-      bottom: 90px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--text);
-      color: #fff;
-      border-radius: 10px;
-      padding: 10px 20px;
-      font-size: 14px;
-      opacity: 0;
-      transition: all 0.3s;
-      z-index: 300;
-      white-space: nowrap;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+/* ── FOOD PHOTO ── */
+.food-photo-area{border:2px dashed var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all 0.15s;margin-bottom:12px;background:var(--bg)}
+.food-photo-area:hover{background:var(--surface2);border-color:var(--sand)}
+.food-photo-area input{display:none}
+.food-photos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.food-photo-thumb{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:1}
+.food-photo-thumb img{width:100%;height:100%;object-fit:cover}
+.food-photo-thumb .del-photo{position:absolute;top:3px;right:3px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:11px;display:grid;place-items:center}
 
-    /* ── Tips page ── */
-    .tip-card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px;
-      margin-bottom: 14px;
-    }
-    .tip-card h4 {
-      font-family: 'Fraunces', serif;
-      font-size: 15px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .tip-list { list-style: none; display: grid; gap: 6px; }
-    .tip-list li {
-      font-size: 13px;
-      color: var(--text2);
-      padding-left: 16px;
-      position: relative;
-      line-height: 1.5;
-    }
-    .tip-list li::before { content: "→"; position: absolute; left: 0; color: var(--accent2); }
+/* ── TOAST ── */
+.toast{position:fixed;bottom:95px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bark);color:#fff;border-radius:10px;padding:9px 18px;font-size:13px;opacity:0;transition:all 0.3s;z-index:300;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-    /* Bottom nav */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: var(--surface);
-      border-top: 1.5px solid var(--border);
-      display: flex;
-      padding: 8px 0 12px;
-      z-index: 100;
-    }
-    .nav-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      cursor: pointer;
-      padding: 6px 0;
-      font-size: 11px;
-      color: var(--text2);
-      transition: color 0.15s;
-      background: none;
-      border: none;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .nav-item .nav-icon { font-size: 20px; }
-    .nav-item.active { color: var(--accent); }
+/* ── BOTTOM NAV ── */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1.5px solid var(--border);display:flex;padding:6px 0 10px;z-index:100}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:5px 0;font-size:10px;color:var(--text2);background:none;border:none;font-family:'Inter',sans-serif;transition:color 0.15s}
+.nav-item .ni{font-size:18px}
+.nav-item.active{color:var(--clay)}
 
-    /* Filter bar */
-    .filter-bar {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-    }
-    .filter-chip {
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: 1.5px solid var(--border);
-      font-size: 12px;
-      cursor: pointer;
-      background: var(--surface);
-      color: var(--text2);
-      white-space: nowrap;
-      font-family: 'DM Sans', sans-serif;
-      transition: all 0.15s;
-    }
-    .filter-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+/* ── TIPS ── */
+.tip-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.tip-card h4{font-family:'Playfair Display',serif;font-size:14px;margin-bottom:8px;display:flex;align-items:center;gap:7px;color:var(--bark)}
+.tip-list{list-style:none;display:grid;gap:5px}
+.tip-list li{font-size:12px;color:var(--text2);padding-left:14px;position:relative;line-height:1.5}
+.tip-list li::before{content:"→";position:absolute;left:0;color:var(--sand)}
 
-    .page-title {
-      font-family: 'Fraunces', serif;
-      font-size: 24px;
-      margin-bottom: 6px;
-      font-weight: 700;
-    }
-    .page-sub { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(44,31,21,0.55);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:20px;padding:22px;width:100%;max-width:480px;max-height:88vh;overflow-y:auto}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.modal-hdr h2{font-family:'Playfair Display',serif;font-size:18px;color:var(--bark)}
+.btn-close{background:var(--surface2);border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:15px;display:grid;place-items:center;color:var(--text2)}
 
-    /* Print button */
-    .btn-print {
-      width: 100%;
-      padding: 13px;
-      background: var(--surface);
-      color: var(--accent);
-      border: 2px dashed var(--accent);
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 500;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      margin-bottom: 16px;
-      transition: all 0.15s;
-    }
-    .btn-print:hover { background: var(--accent-light); }
-
-    @media print {
-      body > *:not(#print-area) { display: none !important; }
-      #print-area { display: block !important; }
-    }
-
-    @media (max-width: 420px) {
-      .row-2 { grid-template-columns: 1fr; }
-      .stats { grid-template-columns: repeat(3, 1fr); }
-    }
-  </style>
+@media(max-width:420px){.row-2{grid-template-columns:1fr}.sleep-grid{grid-template-columns:repeat(2,1fr)}.activity-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 
 <header>
-  <div class="logo">🧠</div>
-  <h1>Headache Diary</h1>
-  <span id="today-date"></span>
+  <div class="hdr-logo">🧠</div>
+  <div>
+    <div class="hdr-title">Headache Diary</div>
+  </div>
+  <div class="hdr-sub" id="today-date"></div>
 </header>
 
-<!-- Pages -->
+<!-- STOPWATCH BAR -->
+<div class="stopwatch-bar">
+  <div>
+    <div class="sw-display" id="sw-display">00:00:00</div>
+    <div class="sw-label" id="sw-label">Pain timer</div>
+  </div>
+  <button class="sw-btn sw-start" id="sw-start-btn" onclick="swStart()">▶ Start</button>
+  <button class="sw-btn sw-stop" id="sw-stop-btn" onclick="swStop()" style="display:none">⏹ Stop</button>
+  <button class="sw-btn sw-reset" id="sw-reset-btn" onclick="swReset()" style="display:none">↺</button>
+  <button class="sw-save-btn" id="sw-save-btn" onclick="swSaveToForm()" style="display:none">Use Duration ↗</button>
+</div>
+
+<!-- PAGE: HOME -->
 <div class="page active" id="page-home">
   <div class="stats">
-    <div class="stat">
-      <div class="stat-num" id="stat-total">0</div>
-      <div class="stat-label">Total Episodes</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num" id="stat-avg">–</div>
-      <div class="stat-label">Avg Severity</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num" id="stat-this-month">0</div>
-      <div class="stat-label">This Month</div>
-    </div>
+    <div class="stat"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Episodes</div></div>
+    <div class="stat"><div class="stat-num" id="stat-avg">–</div><div class="stat-label">Avg Severity</div></div>
+    <div class="stat"><div class="stat-num" id="stat-month">0</div><div class="stat-label">This Month</div></div>
   </div>
-
   <button class="btn-print" onclick="printSummary()">🖨️ Print Summary for Doctor</button>
-
   <div class="filter-bar">
-    <button class="filter-chip active" onclick="setFilter('all', this)">All</button>
-    <button class="filter-chip" onclick="setFilter('7', this)">Last 7 days</button>
-    <button class="filter-chip" onclick="setFilter('30', this)">Last 30 days</button>
-    <button class="filter-chip" onclick="setFilter('severe', this)">Severe (7+)</button>
+    <button class="filter-chip active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-chip" onclick="setFilter('7',this)">Last 7 days</button>
+    <button class="filter-chip" onclick="setFilter('30',this)">Last 30 days</button>
+    <button class="filter-chip" onclick="setFilter('severe',this)">Severe (7+)</button>
   </div>
-
   <div id="logs-container"></div>
 </div>
 
+<!-- PAGE: LOG -->
 <div class="page" id="page-log">
   <p class="page-title">Log Episode</p>
-  <p class="page-sub">Record a headache episode. All fields except date & severity are optional.</p>
+  <p class="page-sub">All fields except date are optional — log as much as you can.</p>
 
+  <!-- DATE/TIME -->
   <div class="form-section">
-    <h3>📅 When did it happen?</h3>
+    <h3>📅 When?</h3>
     <div class="row-2">
-      <div>
-        <label>Date</label>
-        <input type="date" id="f-date" />
+      <div><label>Date</label><input type="date" id="f-date"/></div>
+      <div><label>Time started</label><input type="time" id="f-time"/></div>
+    </div>
+  </div>
+
+  <!-- SEVERITY -->
+  <div class="form-section">
+    <h3>💢 Severity</h3>
+    <div class="sev-display" id="sev-disp">5</div>
+    <div class="sev-lbl" id="sev-lbl">Moderate</div>
+    <input type="range" min="1" max="10" value="5" id="f-severity" oninput="updateSev(this.value)"/>
+    <div class="sev-ticks"><span>1 Mild</span><span>5 Moderate</span><span>10 Severe</span></div>
+  </div>
+
+  <!-- DURATION -->
+  <div class="form-section">
+    <h3>⏱ Duration</h3>
+    <p style="font-size:12px;color:var(--text2);margin-bottom:10px">Use the stopwatch above, or enter manually.</p>
+    <div class="row-2">
+      <div><label>Hours</label><input type="number" id="f-dur-h" min="0" max="72" placeholder="0"/></div>
+      <div><label>Minutes</label><input type="number" id="f-dur-m" min="0" max="59" placeholder="0"/></div>
+    </div>
+  </div>
+
+  <!-- PAIN LOCATION - 3D HEAD -->
+  <div class="form-section">
+    <h3>📍 Pain Location</h3>
+    <p class="head-hint">🖱 Drag to rotate · Click/tap to mark pain spots</p>
+    <div class="head-canvas-wrap" id="headWrap">
+      <canvas id="headCanvas"></canvas>
+    </div>
+    <div class="selected-pain-zones" id="pain-zones-display"></div>
+    <div style="margin-top:10px">
+      <label>Also mark specific areas</label>
+      <div class="chips" id="chips-location">
+        <button class="chip" onclick="toggleChip(this,'location')">Forehead</button>
+        <button class="chip" onclick="toggleChip(this,'location')">Left temple</button>
+        <button class="chip" onclick="toggleChip(this,'location')">Right temple</button>
+        <button class="chip" onclick="toggleChip(this,'location')">Behind eyes</button>
+        <button class="chip" onclick="toggleChip(this,'location')">Top of head</button>
+        <button class="chip" onclick="toggleChip(this,'location')">Back of head</button>
+        <button class="chip" onclick="toggleChip(this,'location')">Both sides</button>
+        <button class="chip" onclick="toggleChip(this,'location')">Front of neck</button>
+        <button class="chip" onclick="toggleChip(this,'location')">Back of neck</button>
+        <button class="chip" onclick="toggleChip(this,'location')">Left shoulder</button>
+        <button class="chip" onclick="toggleChip(this,'location')">Right shoulder</button>
+        <button class="chip" onclick="toggleChip(this,'location')">Jaw / Face</button>
       </div>
-      <div>
-        <label>Time</label>
-        <input type="time" id="f-time" />
+    </div>
+    <div style="margin-top:6px">
+      <label>Throat / Neck feeling</label>
+      <div class="chips" id="chips-throat">
+        <button class="chip" onclick="toggleChip(this,'throat')">Strangling / Tightness</button>
+        <button class="chip" onclick="toggleChip(this,'throat')">Pressure on throat</button>
+        <button class="chip" onclick="toggleChip(this,'throat')">Difficulty swallowing</button>
+        <button class="chip" onclick="toggleChip(this,'throat')">Neck stiffness</button>
+        <button class="chip" onclick="toggleChip(this,'throat')">Pulsing in neck</button>
       </div>
     </div>
   </div>
 
+  <!-- PAIN TYPE -->
   <div class="form-section">
-    <h3>💢 Pain Severity</h3>
-    <div class="severity-row">
-      <div class="severity-display" id="sev-display">5</div>
-      <div class="severity-label" id="sev-label">Moderate</div>
-      <input type="range" min="1" max="10" value="5" id="f-severity" oninput="updateSeverity(this.value)" />
-      <div class="severity-ticks">
-        <span>1 Mild</span><span>5 Moderate</span><span>10 Severe</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-section">
-    <h3>🔍 Pain Type & Location</h3>
-    <label>Type of headache</label>
+    <h3>🔍 Type of Pain</h3>
     <div class="chips" id="chips-type">
       <button class="chip" onclick="toggleChip(this,'type')">Throbbing / Pulsing</button>
       <button class="chip" onclick="toggleChip(this,'type')">Pressure / Squeezing</button>
       <button class="chip" onclick="toggleChip(this,'type')">Stabbing / Sharp</button>
       <button class="chip" onclick="toggleChip(this,'type')">Dull / Aching</button>
       <button class="chip" onclick="toggleChip(this,'type')">Burning</button>
-      <button class="chip" onclick="toggleChip(this,'type')">Tightening / Band-like</button>
-    </div>
-    <label>Location</label>
-    <div class="chips" id="chips-location">
-      <button class="chip" onclick="toggleChip(this,'location')">Forehead</button>
-      <button class="chip" onclick="toggleChip(this,'location')">Left side</button>
-      <button class="chip" onclick="toggleChip(this,'location')">Right side</button>
-      <button class="chip" onclick="toggleChip(this,'location')">Both sides</button>
-      <button class="chip" onclick="toggleChip(this,'location')">Back of head</button>
-      <button class="chip" onclick="toggleChip(this,'location')">Behind eyes</button>
-      <button class="chip" onclick="toggleChip(this,'location')">Top of head</button>
-      <button class="chip" onclick="toggleChip(this,'location')">Neck / Base</button>
+      <button class="chip" onclick="toggleChip(this,'type')">Tightening / Band</button>
     </div>
   </div>
 
-  <div class="form-section">
-    <h3>⏱ Duration</h3>
-    <div class="row-2">
-      <div>
-        <label>Hours</label>
-        <input type="number" id="f-dur-h" min="0" max="72" placeholder="e.g. 2" />
-      </div>
-      <div>
-        <label>Minutes</label>
-        <input type="number" id="f-dur-m" min="0" max="59" placeholder="e.g. 30" />
-      </div>
-    </div>
-  </div>
-
+  <!-- OTHER SYMPTOMS -->
   <div class="form-section">
     <h3>😵 Other Symptoms</h3>
     <div class="chips" id="chips-sx">
@@ -613,35 +314,152 @@
       <button class="chip" onclick="toggleChip(this,'sx')">Sound sensitivity</button>
       <button class="chip" onclick="toggleChip(this,'sx')">Aura / Vision changes</button>
       <button class="chip" onclick="toggleChip(this,'sx')">Dizziness</button>
-      <button class="chip" onclick="toggleChip(this,'sx')">Neck stiffness</button>
       <button class="chip" onclick="toggleChip(this,'sx')">Fatigue</button>
       <button class="chip" onclick="toggleChip(this,'sx')">Brain fog</button>
+      <button class="chip" onclick="toggleChip(this,'sx')">Eye redness</button>
       <button class="chip" onclick="toggleChip(this,'sx')">Nasal congestion</button>
-      <button class="chip" onclick="toggleChip(this,'sx')">Eye redness / tearing</button>
     </div>
-    <label>Other notes on symptoms</label>
-    <textarea id="f-sx-notes" placeholder="Describe anything else you felt..."></textarea>
+    <label>Other symptom notes</label>
+    <textarea id="f-sx-notes" placeholder="Any other symptoms you noticed..."></textarea>
   </div>
 
+  <!-- SLEEP -->
   <div class="form-section">
-    <h3>🍽 Food & Drink Before Episode</h3>
-    <label>Select possible triggers</label>
+    <h3>😴 Sleep Before Episode</h3>
+    <label>Sleep position last night</label>
+    <div class="sleep-grid" id="sleep-grid">
+
+      <!-- On Back -->
+      <div class="sleep-card" onclick="selectSleep(this,'On back')" data-pos="On back">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="35" width="70" height="18" rx="9" fill="#c9a87c"/>
+          <circle cx="40" cy="22" r="11" fill="#8b5a47"/>
+          <rect x="28" y="33" width="24" height="3" rx="1.5" fill="#6b3a2a"/>
+          <ellipse cx="27" cy="50" rx="6" ry="3" fill="#a07850" transform="rotate(-20,27,50)"/>
+          <ellipse cx="53" cy="50" rx="6" ry="3" fill="#a07850" transform="rotate(20,53,50)"/>
+        </svg>
+        <span>On Back</span>
+      </div>
+
+      <!-- On Side Left -->
+      <div class="sleep-card" onclick="selectSleep(this,'Left side')" data-pos="Left side">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="38" width="70" height="16" rx="8" fill="#c9a87c"/>
+          <circle cx="18" cy="30" r="10" fill="#8b5a47"/>
+          <rect x="8" y="40" width="60" height="10" rx="5" fill="#6b3a2a" opacity="0.3"/>
+          <path d="M28 44 Q40 38 55 42 Q60 50 55 54 Q40 56 28 52 Z" fill="#a07850"/>
+          <path d="M28 42 Q24 35 30 30" stroke="#8b5a47" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span>Left Side</span>
+      </div>
+
+      <!-- On Side Right -->
+      <div class="sleep-card" onclick="selectSleep(this,'Right side')" data-pos="Right side">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="38" width="70" height="16" rx="8" fill="#c9a87c"/>
+          <circle cx="62" cy="30" r="10" fill="#8b5a47"/>
+          <rect x="8" y="40" width="60" height="10" rx="5" fill="#6b3a2a" opacity="0.3"/>
+          <path d="M52 44 Q40 38 25 42 Q20 50 25 54 Q40 56 52 52 Z" fill="#a07850"/>
+          <path d="M52 42 Q56 35 50 30" stroke="#8b5a47" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span>Right Side</span>
+      </div>
+
+      <!-- On Stomach -->
+      <div class="sleep-card" onclick="selectSleep(this,'On stomach')" data-pos="On stomach">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="40" width="70" height="16" rx="8" fill="#c9a87c"/>
+          <circle cx="40" cy="52" r="10" fill="#8b5a47" transform="rotate(90,40,52)"/>
+          <ellipse cx="40" cy="44" rx="16" ry="8" fill="#a07850"/>
+          <circle cx="35" cy="50" r="8" fill="#8b5a47"/>
+          <path d="M20 44 Q15 38 20 34" stroke="#a07850" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M60 44 Q65 38 60 34" stroke="#a07850" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span>On Stomach</span>
+      </div>
+
+      <!-- Semi-upright -->
+      <div class="sleep-card" onclick="selectSleep(this,'Semi-upright')" data-pos="Semi-upright">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="50" width="55" height="14" rx="7" fill="#c9a87c"/>
+          <rect x="55" y="30" width="14" height="35" rx="7" fill="#c9a87c"/>
+          <circle cx="48" cy="28" r="10" fill="#8b5a47"/>
+          <path d="M38 38 L20 52" stroke="#a07850" stroke-width="8" stroke-linecap="round"/>
+        </svg>
+        <span>Semi-upright</span>
+      </div>
+
+      <!-- No sleep -->
+      <div class="sleep-card" onclick="selectSleep(this,'No sleep')" data-pos="No sleep">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="40" cy="40" r="28" fill="#f5ede3" stroke="#e2d0bc" stroke-width="2"/>
+          <text x="40" y="48" text-anchor="middle" font-size="24">😞</text>
+        </svg>
+        <span>No Sleep</span>
+      </div>
+    </div>
+    <div class="row-2">
+      <div><label>Hours slept</label><input type="number" id="f-sleep-h" min="0" max="24" placeholder="e.g. 6"/></div>
+      <div><label>Sleep quality</label>
+        <select id="f-sleep-q">
+          <option value="">Select...</option>
+          <option>Very poor</option><option>Poor</option><option>Fair</option><option>Good</option><option>Excellent</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVITY -->
+  <div class="form-section">
+    <h3>🏃 Activity Before Episode</h3>
+    <label>What were you doing?</label>
+    <div class="activity-grid" id="activity-grid">
+      <div class="act-chip" onclick="toggleActivity(this,'Working at desk')">💻 Working at desk</div>
+      <div class="act-chip" onclick="toggleActivity(this,'Using phone')">📱 Using phone</div>
+      <div class="act-chip" onclick="toggleActivity(this,'Watching TV/Screen')">📺 Watching TV</div>
+      <div class="act-chip" onclick="toggleActivity(this,'Reading')">📖 Reading</div>
+      <div class="act-chip" onclick="toggleActivity(this,'Driving')">🚗 Driving</div>
+      <div class="act-chip" onclick="toggleActivity(this,'Walking/Exercise')">🚶 Walking/Exercise</div>
+      <div class="act-chip" onclick="toggleActivity(this,'Heavy lifting')">🏋️ Heavy lifting</div>
+      <div class="act-chip" onclick="toggleActivity(this,'Resting/Lying down')">🛋️ Resting</div>
+      <div class="act-chip" onclick="toggleActivity(this,'Eating a meal')">🍽️ Eating</div>
+      <div class="act-chip" onclick="toggleActivity(this,'Stressful situation')">😰 Stressed</div>
+      <div class="act-chip" onclick="toggleActivity(this,'Outdoor/Sun exposure')">☀️ Outdoors</div>
+      <div class="act-chip" onclick="toggleActivity(this,'Just woke up')">🌅 Just woke up</div>
+    </div>
+    <label>Activity notes</label>
+    <textarea id="f-activity-notes" placeholder="Describe what you were doing in more detail..."></textarea>
+  </div>
+
+  <!-- FOOD TRACKER WITH PHOTO -->
+  <div class="form-section">
+    <h3>🍽 Food & Drink</h3>
+    <label>Take a photo of what you ate</label>
+    <div class="food-photo-area" onclick="document.getElementById('food-input').click()">
+      <input type="file" id="food-input" accept="image/*" capture="environment" multiple onchange="handleFoodPhotos(this)"/>
+      <div style="font-size:28px;margin-bottom:6px">📷</div>
+      <div style="font-size:13px;color:var(--text2)">Tap to take photo or choose from gallery</div>
+      <div style="font-size:11px;color:var(--sand);margin-top:3px">You can add multiple photos</div>
+    </div>
+    <div class="food-photos" id="food-photos-preview"></div>
+    <label>Common food triggers</label>
     <div class="chips" id="chips-food">
       <button class="chip" onclick="toggleChip(this,'food')">Coffee / Caffeine</button>
       <button class="chip" onclick="toggleChip(this,'food')">Alcohol</button>
       <button class="chip" onclick="toggleChip(this,'food')">Chocolate</button>
       <button class="chip" onclick="toggleChip(this,'food')">Cheese / Dairy</button>
-      <button class="chip" onclick="toggleChip(this,'food')">Processed / Cured meat</button>
-      <button class="chip" onclick="toggleChip(this,'food')">MSG / Salty food</button>
+      <button class="chip" onclick="toggleChip(this,'food')">Processed meat</button>
+      <button class="chip" onclick="toggleChip(this,'food')">MSG / Salty</button>
       <button class="chip" onclick="toggleChip(this,'food')">Skipped meal</button>
       <button class="chip" onclick="toggleChip(this,'food')">Insufficient water</button>
-      <button class="chip" onclick="toggleChip(this,'food')">Citrus fruits</button>
+      <button class="chip" onclick="toggleChip(this,'food')">Citrus</button>
       <button class="chip" onclick="toggleChip(this,'food')">Artificial sweeteners</button>
     </div>
-    <label>Food notes (what you ate)</label>
-    <textarea id="f-food-notes" placeholder="e.g. Had Jollibee for lunch, 2 cups of coffee..."></textarea>
+    <label>Food notes</label>
+    <textarea id="f-food-notes" placeholder="e.g. Jollibee chickenjoy, rice, 2 cups coffee..."></textarea>
   </div>
 
+  <!-- TRIGGERS -->
   <div class="form-section">
     <h3>⚡ Possible Triggers</h3>
     <div class="chips" id="chips-triggers">
@@ -653,306 +471,521 @@
       <button class="chip" onclick="toggleChip(this,'triggers')">Strong smells</button>
       <button class="chip" onclick="toggleChip(this,'triggers')">Weather change</button>
       <button class="chip" onclick="toggleChip(this,'triggers')">Screen time</button>
-      <button class="chip" onclick="toggleChip(this,'triggers')">Physical exertion</button>
-      <button class="chip" onclick="toggleChip(this,'triggers')">Hormonal / Menstrual</button>
+      <button class="chip" onclick="toggleChip(this,'triggers')">Hormonal</button>
       <button class="chip" onclick="toggleChip(this,'triggers')">Travel / Motion</button>
     </div>
   </div>
 
+  <!-- MEDICATION -->
   <div class="form-section">
     <h3>💊 Medication</h3>
-    <label>Medication taken</label>
     <div class="chips" id="chips-meds">
       <button class="chip" onclick="toggleChip(this,'meds')">Paracetamol</button>
       <button class="chip" onclick="toggleChip(this,'meds')">Ibuprofen</button>
       <button class="chip" onclick="toggleChip(this,'meds')">Mefenamic acid</button>
+      <button class="chip" onclick="toggleChip(this,'meds')">Aceclofenac</button>
       <button class="chip" onclick="toggleChip(this,'meds')">Aspirin</button>
       <button class="chip" onclick="toggleChip(this,'meds')">Naproxen</button>
-      <button class="chip" onclick="toggleChip(this,'meds')">Triptans</button>
       <button class="chip" onclick="toggleChip(this,'meds')">None taken</button>
     </div>
-    <label>Other medication</label>
-    <input type="text" id="f-med-other" placeholder="e.g. Prescription name, dose..." />
+    <label>Other medication / dose</label>
+    <input type="text" id="f-med-other" placeholder="e.g. Prescription name, dose..."/>
     <label>Did medication give relief?</label>
-    <div class="relief-toggle">
-      <button class="relief-btn" id="relief-yes" onclick="setRelief('yes')">✅ Yes, with relief</button>
-      <button class="relief-btn" id="relief-partial" onclick="setRelief('partial')">🔶 Partial relief</button>
-      <button class="relief-btn" id="relief-no" onclick="setRelief('no')">❌ No relief</button>
+    <div class="relief-row">
+      <button class="relief-btn" id="rel-yes" onclick="setRelief('yes')">✅ Yes</button>
+      <button class="relief-btn" id="rel-part" onclick="setRelief('partial')">🔶 Partial</button>
+      <button class="relief-btn" id="rel-no" onclick="setRelief('no')">❌ No</button>
     </div>
-    <div id="relief-na" style="font-size:13px;color:var(--text2);margin-bottom:14px;">No medication selected.</div>
   </div>
 
+  <!-- NOTES -->
   <div class="form-section">
-    <h3>📝 Additional Notes</h3>
-    <textarea id="f-notes" placeholder="Anything else your doctor should know — what you were doing, how you felt before, sleep quality, stress level..."></textarea>
+    <h3>📝 Notes</h3>
+    <textarea id="f-notes" placeholder="Anything else your doctor should know..."></textarea>
   </div>
 
   <button class="btn-primary" onclick="saveLog()">💾 Save Episode</button>
-  <div style="height:16px;"></div>
+  <div style="height:14px"></div>
 </div>
 
+<!-- PAGE: TIPS -->
 <div class="page" id="page-tips">
   <p class="page-title">Doctor's Tips</p>
-  <p class="page-sub">Suggestions on what to log and track for your chronic headache diary.</p>
-
-  <div class="tip-card">
-    <h4>📋 Why These Details Matter</h4>
-    <ul class="tip-list">
-      <li>Patterns across episodes help your doctor identify headache type (migraine, tension, cluster, etc.)</li>
-      <li>Tracking triggers helps you and your doctor prevent future episodes</li>
-      <li>Medication logs show what's working and prevent overuse headache</li>
-    </ul>
-  </div>
-
-  <div class="tip-card">
-    <h4>🍽 Food Triggers to Watch</h4>
-    <ul class="tip-list">
-      <li>Log everything you ate 24 hours before a headache starts</li>
-      <li>Common triggers: aged cheese, chocolate, alcohol (especially red wine), processed meats, MSG</li>
-      <li>Skipping meals or dehydration are very common triggers — log water intake</li>
-      <li>Caffeine: both too much and withdrawal can cause headaches</li>
-    </ul>
-  </div>
-
-  <div class="tip-card">
-    <h4>😴 Sleep & Lifestyle</h4>
-    <ul class="tip-list">
-      <li>Note your sleep hours — both too little and too much can trigger headaches</li>
-      <li>Track your stress level (even just low/medium/high)</li>
-      <li>Note any screen time before headache onset</li>
-      <li>Physical activity, posture, and eye strain are also common factors</li>
-    </ul>
-  </div>
-
-  <div class="tip-card">
-    <h4>💊 Medication Tracking</h4>
-    <ul class="tip-list">
-      <li>Always note the exact name and dose of medication taken</li>
-      <li>Using pain relievers more than 2–3x/week can cause "rebound" (medication overuse) headaches</li>
-      <li>Note how long after taking medication you felt relief (or didn't)</li>
-      <li>Bring this diary to every doctor visit</li>
-    </ul>
-  </div>
-
-  <div class="tip-card">
-    <h4>🔴 When to Seek Immediate Help</h4>
-    <ul class="tip-list">
-      <li>"Thunderclap" headache — sudden, worst headache of your life</li>
-      <li>Headache with fever, stiff neck, confusion, or rash</li>
-      <li>Headache after head injury</li>
-      <li>New headache after age 50</li>
-      <li>Headache with vision, speech, or limb problems</li>
-    </ul>
-  </div>
-
-  <div class="tip-card">
-    <h4>📤 Sharing With Your Doctor</h4>
-    <ul class="tip-list">
-      <li>Use the Export button on your Home tab to download your log as a text summary</li>
-      <li>Bring to every consult — even photos of this diary app screen help</li>
-      <li>Mention how headaches affect your daily activities (work, sleep, chores)</li>
-    </ul>
-  </div>
+  <p class="page-sub">What to track and why it matters.</p>
+  <div class="tip-card"><h4>📋 Why Log Everything?</h4><ul class="tip-list"><li>Patterns help identify headache type (migraine, tension, cluster, etc.)</li><li>Triggers help prevent future episodes</li><li>Medication logs prevent overuse headache</li></ul></div>
+  <div class="tip-card"><h4>🍽 Food Triggers</h4><ul class="tip-list"><li>Log everything eaten 24 hours before a headache</li><li>Common: aged cheese, chocolate, alcohol, processed meats, MSG</li><li>Skipped meals and dehydration are very common triggers</li><li>Caffeine: too much AND withdrawal can both cause headaches</li></ul></div>
+  <div class="tip-card"><h4>😴 Sleep Matters</h4><ul class="tip-list"><li>Both too little AND too much sleep can trigger headaches</li><li>Sleep position affects neck tension — key for your neck/throat pain</li><li>Log sleep quality alongside your episodes</li></ul></div>
+  <div class="tip-card"><h4>🏃 Activity & Posture</h4><ul class="tip-list"><li>Prolonged screen time and poor posture are major triggers</li><li>Note if headache came after physical exertion</li><li>Driving and reading can strain neck muscles</li></ul></div>
+  <div class="tip-card"><h4>💊 Medication Tracking</h4><ul class="tip-list"><li>Note exact name and dose of every medication taken</li><li>Using pain relievers more than 2–3x/week can cause rebound headaches</li><li>Aceclofenac: take as prescribed (2x/day) — do not increase on your own</li></ul></div>
+  <div class="tip-card"><h4>🔴 Seek Immediate Help If:</h4><ul class="tip-list"><li>Sudden "worst headache of your life"</li><li>Headache with fever, stiff neck, confusion, or rash</li><li>Headache after head injury</li><li>Vision, speech, or limb problems with headache</li><li>Increasing throat tightness or difficulty breathing</li></ul></div>
 </div>
 
-<!-- Edit Modal -->
+<!-- MODAL -->
 <div class="modal-overlay" id="edit-modal">
   <div class="modal">
-    <div class="modal-header">
-      <h2>Edit Episode</h2>
-      <button class="btn-close" onclick="closeModal()">✕</button>
-    </div>
+    <div class="modal-hdr"><h2>Edit Episode</h2><button class="btn-close" onclick="closeModal()">✕</button></div>
     <div id="modal-body"></div>
   </div>
 </div>
 
-<!-- Bottom Nav -->
 <nav class="bottom-nav">
-  <button class="nav-item active" id="nav-home" onclick="switchPage('home')">
-    <span class="nav-icon">📋</span>My Logs
-  </button>
-  <button class="nav-item" id="nav-log" onclick="switchPage('log')">
-    <span class="nav-icon">➕</span>Log Episode
-  </button>
-  <button class="nav-item" id="nav-tips" onclick="switchPage('tips')">
-    <span class="nav-icon">💡</span>Doctor Tips
-  </button>
+  <button class="nav-item active" id="nav-home" onclick="switchPage('home')"><span class="ni">📋</span>My Logs</button>
+  <button class="nav-item" id="nav-log" onclick="switchPage('log')"><span class="ni">➕</span>Log Episode</button>
+  <button class="nav-item" id="nav-tips" onclick="switchPage('tips')"><span class="ni">💡</span>Tips</button>
 </nav>
-
 <div class="toast" id="toast"></div>
 
 <script>
-// ── State ──────────────────────────────────────────────────────────────────
-let logs = JSON.parse(localStorage.getItem('hd-logs') || '[]');
-let chips = { type: [], location: [], sx: [], food: [], triggers: [], meds: [] };
+// ── STATE ────────────────────────────────────────────────────────────────
+let logs = JSON.parse(localStorage.getItem('hd-logs-v2') || '[]');
+let chips = {type:[],location:[],throat:[],sx:[],food:[],triggers:[],meds:[]};
+let activities = [];
+let selectedSleep = null;
 let relief = null;
-let currentFilter = 'all';
 let editingId = null;
+let currentFilter = 'all';
+let foodPhotos = []; // base64 strings
+let painDots = []; // {x,y,zone} percent coords on canvas
 
-const SEVERITY_LABELS = ['','Minimal','Very Mild','Mild','Mild-Moderate','Moderate','Moderate','Moderate-Severe','Severe','Very Severe','Worst Possible'];
+const SEV = ['','Minimal','Very Mild','Mild','Mild-Moderate','Moderate','Moderate','Moderate-Severe','Severe','Very Severe','Worst Possible'];
 
-// ── Init ───────────────────────────────────────────────────────────────────
-function init() {
-  const now = new Date();
-  document.getElementById('today-date').textContent = now.toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' });
-  const dateEl = document.getElementById('f-date');
-  const timeEl = document.getElementById('f-time');
-  dateEl.value = now.toISOString().slice(0,10);
-  timeEl.value = now.toTimeString().slice(0,5);
-  renderLogs();
-  updateStats();
-}
+// ── STOPWATCH ─────────────────────────────────────────────────────────────
+let swInterval = null, swSeconds = 0, swRunning = false, swStartTime = null;
 
-// ── Tabs ───────────────────────────────────────────────────────────────────
-function switchPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  document.getElementById('nav-'+id).classList.add('active');
-}
-
-// ── Severity ───────────────────────────────────────────────────────────────
-function updateSeverity(val) {
-  document.getElementById('sev-display').textContent = val;
-  document.getElementById('sev-label').textContent = SEVERITY_LABELS[val] || '';
-}
-
-// ── Chips ──────────────────────────────────────────────────────────────────
-function toggleChip(el, group) {
-  el.classList.toggle('selected');
-  const text = el.textContent;
-  if (chips[group].includes(text)) {
-    chips[group] = chips[group].filter(x => x !== text);
-  } else {
-    chips[group].push(text);
+function swStart(){
+  if(swRunning) return;
+  swRunning = true;
+  swStartTime = swStartTime || new Date().toTimeString().slice(0,5);
+  swInterval = setInterval(()=>{swSeconds++;swUpdateDisplay();},1000);
+  document.getElementById('sw-start-btn').style.display='none';
+  document.getElementById('sw-stop-btn').style.display='';
+  document.getElementById('sw-reset-btn').style.display='none';
+  document.getElementById('sw-save-btn').style.display='none';
+  document.getElementById('sw-display').classList.add('running');
+  document.getElementById('sw-label').textContent='Pain started — timer running';
+  // Auto-fill start time
+  if(!document.getElementById('f-time').value && swStartTime){
+    document.getElementById('f-time').value = swStartTime;
   }
 }
-
-// ── Relief ─────────────────────────────────────────────────────────────────
-function setRelief(val) {
-  relief = val;
-  document.getElementById('relief-yes').className = 'relief-btn' + (val==='yes' ? ' yes' : '');
-  document.getElementById('relief-partial').className = 'relief-btn' + (val==='partial' ? ' yes' : '');
-  document.getElementById('relief-no').className = 'relief-btn' + (val==='no' ? ' no' : '');
+function swStop(){
+  if(!swRunning) return;
+  swRunning = false;
+  clearInterval(swInterval);
+  document.getElementById('sw-stop-btn').style.display='none';
+  document.getElementById('sw-start-btn').style.display='';
+  document.getElementById('sw-reset-btn').style.display='';
+  document.getElementById('sw-save-btn').style.display='';
+  document.getElementById('sw-display').classList.remove('running');
+  document.getElementById('sw-label').textContent=`Stopped — ${swFormatTime(swSeconds)}`;
+}
+function swReset(){
+  swSeconds=0; swRunning=false; swStartTime=null;
+  clearInterval(swInterval);
+  swUpdateDisplay();
+  document.getElementById('sw-start-btn').style.display='';
+  document.getElementById('sw-stop-btn').style.display='none';
+  document.getElementById('sw-reset-btn').style.display='none';
+  document.getElementById('sw-save-btn').style.display='none';
+  document.getElementById('sw-display').classList.remove('running');
+  document.getElementById('sw-label').textContent='Pain timer';
+}
+function swUpdateDisplay(){
+  document.getElementById('sw-display').textContent = swFormatTime(swSeconds);
+}
+function swFormatTime(s){
+  const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60;
+  return [h,m,sec].map(v=>String(v).padStart(2,'0')).join(':');
+}
+function swSaveToForm(){
+  const h=Math.floor(swSeconds/3600), m=Math.floor((swSeconds%3600)/60);
+  document.getElementById('f-dur-h').value=h;
+  document.getElementById('f-dur-m').value=m;
+  showToast('⏱ Duration added to form');
+  switchPage('log');
 }
 
-// ── Save ───────────────────────────────────────────────────────────────────
-function saveLog() {
-  const date = document.getElementById('f-date').value;
-  const time = document.getElementById('f-time').value;
-  if (!date) { showToast('⚠️ Please set a date.'); return; }
+// ── 3D HEAD ───────────────────────────────────────────────────────────────
+const canvas = document.getElementById('headCanvas');
+const ctx = canvas.getContext('2d');
+let rotY = 0, rotX = -10, isDragging = false, lastX = 0, lastY = 0;
+const PAIN_ZONES = [
+  {name:'Forehead',nx:0,ny:-0.55,nz:0.82},
+  {name:'Left temple',nx:-0.75,ny:-0.3,nz:0.55},
+  {name:'Right temple',nx:0.75,ny:-0.3,nz:0.55},
+  {name:'Crown',nx:0,ny:-1,nz:0.1},
+  {name:'Back of head',nx:0,ny:-0.3,nz:-1},
+  {name:'Left back',nx:-0.7,ny:-0.3,nz:-0.65},
+  {name:'Right back',nx:0.7,ny:-0.3,nz:-0.65},
+  {name:'Front neck',nx:0,ny:0.5,nz:0.95},
+  {name:'Back neck',nx:0,ny:0.4,nz:-0.95},
+  {name:'Left shoulder',nx:-1,ny:0.95,nz:0},
+  {name:'Right shoulder',nx:1,ny:0.95,nz:0},
+  {name:'Left jaw',nx:-0.65,ny:0.2,nz:0.73},
+  {name:'Right jaw',nx:0.65,ny:0.2,nz:0.73},
+];
 
-  const entry = {
-    id: editingId || Date.now().toString(),
-    date, time,
-    severity: parseInt(document.getElementById('f-severity').value),
-    painType: [...chips.type],
-    location: [...chips.location],
-    durH: document.getElementById('f-dur-h').value,
-    durM: document.getElementById('f-dur-m').value,
-    sx: [...chips.sx],
-    sxNotes: document.getElementById('f-sx-notes').value,
-    food: [...chips.food],
-    foodNotes: document.getElementById('f-food-notes').value,
-    triggers: [...chips.triggers],
-    meds: [...chips.meds],
-    medOther: document.getElementById('f-med-other').value,
-    relief: relief,
-    notes: document.getElementById('f-notes').value,
-    savedAt: new Date().toISOString()
+function resizeCanvas(){
+  const wrap = document.getElementById('headWrap');
+  canvas.width = wrap.offsetWidth;
+  canvas.height = wrap.offsetHeight;
+  drawHead();
+}
+
+function project3D(nx,ny,nz){
+  // Rotate Y
+  const cosY=Math.cos(rotY*Math.PI/180), sinY=Math.sin(rotY*Math.PI/180);
+  const x1 = nx*cosY - nz*sinY;
+  const z1 = nx*sinY + nz*cosY;
+  // Rotate X
+  const cosX=Math.cos(rotX*Math.PI/180), sinX=Math.sin(rotX*Math.PI/180);
+  const y2 = ny*cosX - z1*sinX;
+  const z2 = ny*sinX + z1*cosX;
+  const cx=canvas.width/2, cy=canvas.height/2;
+  const scale = Math.min(canvas.width,canvas.height)*0.33;
+  return {
+    sx: cx + x1*scale,
+    sy: cy + y2*scale*1.5,
+    z: z2, visible: z2 > -0.15
   };
+}
 
-  if (editingId) {
-    logs = logs.map(l => l.id === editingId ? entry : l);
-    editingId = null;
-  } else {
-    logs.unshift(entry);
+function drawHead(){
+  if(!ctx) return;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const cx=canvas.width/2, cy=canvas.height/2;
+  const scaleX=Math.min(canvas.width,canvas.height)*0.28;
+  const scaleY=scaleX*1.22;
+
+  // Draw body/shoulders
+  const sLP = project3D(-1,0.95,0), sRP = project3D(1,0.95,0);
+  const neckP = project3D(0,0.6,0.2);
+  ctx.beginPath();
+  ctx.moveTo(sLP.sx-30, canvas.height+10);
+  ctx.lineTo(sLP.sx, sLP.sy);
+  ctx.quadraticCurveTo(neckP.sx-20, neckP.sy+10, neckP.sx, neckP.sy);
+  ctx.quadraticCurveTo(neckP.sx+20, neckP.sy+10, sRP.sx, sRP.sy);
+  ctx.lineTo(sRP.sx+30, canvas.height+10);
+  ctx.fillStyle='#d4a882';
+  ctx.fill();
+  ctx.strokeStyle='#b8855a';
+  ctx.lineWidth=1.5;
+  ctx.stroke();
+
+  // Neck
+  const nTop = project3D(0,0.3,0.1);
+  ctx.beginPath();
+  ctx.moveTo(nTop.sx-14, nTop.sy);
+  ctx.lineTo(nTop.sx+14, nTop.sy);
+  ctx.lineTo(neckP.sx+18, neckP.sy);
+  ctx.lineTo(neckP.sx-18, neckP.sy);
+  ctx.closePath();
+  ctx.fillStyle='#d4a882';
+  ctx.fill();
+  ctx.strokeStyle='#b8855a';
+  ctx.lineWidth=1;
+  ctx.stroke();
+
+  // Head ellipse
+  const headY = cy - scaleY*0.15;
+  const headGrad = ctx.createRadialGradient(cx-scaleX*0.2, headY-scaleY*0.2, 5, cx, headY, scaleX*1.1);
+  headGrad.addColorStop(0,'#e8c4a0');
+  headGrad.addColorStop(0.6,'#d4a882');
+  headGrad.addColorStop(1,'#b8855a');
+  ctx.beginPath();
+  ctx.ellipse(cx, headY, scaleX, scaleY, 0, 0, Math.PI*2);
+  ctx.fillStyle = headGrad;
+  ctx.fill();
+  ctx.strokeStyle='#b8855a';
+  ctx.lineWidth=2;
+  ctx.stroke();
+
+  // Face features (only when facing front)
+  const faceVis = Math.cos(rotY*Math.PI/180);
+  if(faceVis > 0.3){
+    const alpha = Math.min(1,(faceVis-0.3)/0.4);
+    ctx.globalAlpha = alpha;
+    // Eyes
+    const eyeY = headY - scaleY*0.12;
+    const eyeOff = scaleX*0.28*faceVis;
+    [-1,1].forEach(side=>{
+      ctx.beginPath();
+      ctx.ellipse(cx+side*eyeOff, eyeY, 6*faceVis, 4, 0, 0, Math.PI*2);
+      ctx.fillStyle='#4a2c0a';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(cx+side*eyeOff+1, eyeY-1, 2, 2, 0, 0, Math.PI*2);
+      ctx.fillStyle='rgba(255,255,255,0.6)';
+      ctx.fill();
+    });
+    // Nose
+    ctx.beginPath();
+    ctx.moveTo(cx, eyeY+8);
+    ctx.quadraticCurveTo(cx+4*faceVis, eyeY+20, cx, eyeY+22);
+    ctx.strokeStyle='#8b5a30';
+    ctx.lineWidth=1.5;
+    ctx.stroke();
+    // Mouth
+    ctx.beginPath();
+    ctx.arc(cx, headY+scaleY*0.18, 12*faceVis, 0.1*Math.PI, 0.9*Math.PI);
+    ctx.strokeStyle='#8b5a30';
+    ctx.lineWidth=1.5;
+    ctx.stroke();
+    ctx.globalAlpha=1;
   }
 
-  persist();
-  resetForm();
-  showToast('✅ Episode saved!');
-  switchPage('home');
-}
+  // Ear (whichever side is visible)
+  const leftEarVis = -Math.sin(rotY*Math.PI/180);
+  const rightEarVis = Math.sin(rotY*Math.PI/180);
+  if(leftEarVis > 0.1){
+    ctx.globalAlpha=Math.min(1,leftEarVis*2);
+    const ep = project3D(-1,0,0);
+    ctx.beginPath();
+    ctx.ellipse(ep.sx, headY, 10, 16, 0, 0, Math.PI*2);
+    ctx.fillStyle='#c49070';
+    ctx.fill();
+    ctx.globalAlpha=1;
+  }
+  if(rightEarVis > 0.1){
+    ctx.globalAlpha=Math.min(1,rightEarVis*2);
+    const ep = project3D(1,0,0);
+    ctx.beginPath();
+    ctx.ellipse(ep.sx, headY, 10, 16, 0, 0, Math.PI*2);
+    ctx.fillStyle='#c49070';
+    ctx.fill();
+    ctx.globalAlpha=1;
+  }
 
-function persist() {
-  localStorage.setItem('hd-logs', JSON.stringify(logs));
-  renderLogs();
-  updateStats();
-}
-
-function resetForm() {
-  const now = new Date();
-  document.getElementById('f-date').value = now.toISOString().slice(0,10);
-  document.getElementById('f-time').value = now.toTimeString().slice(0,5);
-  document.getElementById('f-severity').value = 5;
-  updateSeverity(5);
-  document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-  chips = { type: [], location: [], sx: [], food: [], triggers: [], meds: [] };
-  ['f-dur-h','f-dur-m','f-sx-notes','f-food-notes','f-med-other','f-notes'].forEach(id => document.getElementById(id).value = '');
-  setRelief(null);
-  relief = null;
-}
-
-// ── Filter ─────────────────────────────────────────────────────────────────
-function setFilter(val, el) {
-  currentFilter = val;
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  renderLogs();
-}
-
-function getFiltered() {
-  const now = new Date();
-  return logs.filter(l => {
-    if (currentFilter === 'all') return true;
-    if (currentFilter === 'severe') return l.severity >= 7;
-    const d = parseInt(currentFilter);
-    const ld = new Date(l.date);
-    return (now - ld) / 86400000 <= d;
+  // Draw pain zone hotspots
+  PAIN_ZONES.forEach(zone => {
+    const p = project3D(zone.nx, zone.ny, zone.nz);
+    if(!p.visible) return;
+    const isSelected = chips.location.includes(zone.name) ||
+      painDots.some(d=>d.zone===zone.name);
+    ctx.beginPath();
+    ctx.arc(p.sx, p.sy, isSelected?10:6, 0, Math.PI*2);
+    ctx.fillStyle = isSelected ? 'rgba(192,57,43,0.85)' : 'rgba(201,168,124,0.45)';
+    ctx.fill();
+    ctx.strokeStyle = isSelected ? '#fff' : 'rgba(255,255,255,0.6)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    if(isSelected){
+      ctx.fillStyle='#fff';
+      ctx.font='bold 9px Inter';
+      ctx.textAlign='center';
+      ctx.fillText('✕',p.sx,p.sy+3);
+    }
   });
 }
 
-// ── Render logs ────────────────────────────────────────────────────────────
-function renderLogs() {
-  const container = document.getElementById('logs-container');
-  const filtered = getFiltered();
-  if (!filtered.length) {
-    container.innerHTML = `<div class="empty"><div class="emoji">📓</div><h3>No episodes yet</h3><p>Tap "Log Episode" below to record your first headache episode.</p></div>`;
-    return;
+// Drag rotation
+const wrap = document.getElementById('headWrap');
+wrap.addEventListener('mousedown', e=>{ isDragging=true; lastX=e.clientX; lastY=e.clientY; });
+wrap.addEventListener('mousemove', e=>{
+  if(!isDragging) return;
+  rotY += (e.clientX-lastX)*0.5;
+  rotX += (e.clientY-lastY)*0.3;
+  rotX = Math.max(-35, Math.min(35, rotX));
+  lastX=e.clientX; lastY=e.clientY;
+  drawHead();
+});
+wrap.addEventListener('mouseup', ()=>isDragging=false);
+wrap.addEventListener('mouseleave', ()=>isDragging=false);
+wrap.addEventListener('touchstart', e=>{ isDragging=true; lastX=e.touches[0].clientX; lastY=e.touches[0].clientY; }, {passive:true});
+wrap.addEventListener('touchmove', e=>{
+  if(!isDragging) return;
+  rotY += (e.touches[0].clientX-lastX)*0.5;
+  rotX += (e.touches[0].clientY-lastY)*0.3;
+  rotX = Math.max(-35, Math.min(35, rotX));
+  lastX=e.touches[0].clientX; lastY=e.touches[0].clientY;
+  drawHead();
+}, {passive:true});
+wrap.addEventListener('touchend', ()=>isDragging=false);
+
+// Click to select pain zone
+wrap.addEventListener('click', e=>{
+  const rect = wrap.getBoundingClientRect();
+  const mx = e.clientX-rect.left, my = e.clientY-rect.top;
+  let closest = null, minDist = 25;
+  PAIN_ZONES.forEach(zone=>{
+    const p = project3D(zone.nx,zone.ny,zone.nz);
+    if(!p.visible) return;
+    const dist = Math.sqrt((p.sx-mx)**2+(p.sy-my)**2);
+    if(dist < minDist){ minDist=dist; closest=zone; }
+  });
+  if(closest){
+    if(chips.location.includes(closest.name)){
+      chips.location = chips.location.filter(x=>x!==closest.name);
+    } else {
+      chips.location.push(closest.name);
+    }
+    // sync chips UI
+    document.querySelectorAll('#chips-location .chip').forEach(c=>{
+      c.classList.toggle('sel', chips.location.includes(c.textContent));
+    });
+    updatePainZonesDisplay();
+    drawHead();
   }
+});
 
-  container.innerHTML = filtered.map(l => {
-    const dateStr = new Date(l.date + 'T00:00').toLocaleDateString('en-PH', { weekday:'short', month:'long', day:'numeric', year:'numeric' });
-    const sCol = l.severity >= 8 ? '#c0392b' : l.severity >= 5 ? '#e67e22' : '#27ae60';
-    const durText = (l.durH || l.durM) ? `${l.durH||0}h ${l.durM||0}m` : 'Not recorded';
+function updatePainZonesDisplay(){
+  const el = document.getElementById('pain-zones-display');
+  if(chips.location.length){
+    el.innerHTML = '<div style="font-size:11px;color:var(--text2);margin-top:6px">Selected: '+
+      chips.location.map(z=>`<span class="tag r">${z}</span>`).join('')+'</div>';
+  } else {
+    el.innerHTML='';
+  }
+}
 
-    const reliefTag = l.relief === 'yes' ? '<span class="tag relief">✅ With relief</span>' :
-                      l.relief === 'partial' ? '<span class="tag">🔶 Partial relief</span>' :
-                      l.relief === 'no' ? '<span class="tag no-relief">❌ No relief</span>' : '';
+// ── SLEEP POSITION ────────────────────────────────────────────────────────
+function selectSleep(el, pos){
+  document.querySelectorAll('.sleep-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedSleep = pos;
+}
 
-    const chips = arr => arr.length ? arr.map(x => `<span class="tag">${x}</span>`).join('') : '<span style="color:var(--text2);font-size:12px;">—</span>';
+// ── ACTIVITY ─────────────────────────────────────────────────────────────
+function toggleActivity(el, name){
+  el.classList.toggle('sel');
+  activities = activities.includes(name) ? activities.filter(x=>x!==name) : [...activities, name];
+}
 
-    return `<div class="log-card" id="card-${l.id}">
+// ── FOOD PHOTOS ───────────────────────────────────────────────────────────
+function handleFoodPhotos(input){
+  Array.from(input.files).forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      foodPhotos.push(e.target.result);
+      renderFoodPhotos();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function renderFoodPhotos(){
+  const container = document.getElementById('food-photos-preview');
+  container.innerHTML = foodPhotos.map((src,i)=>`
+    <div class="food-photo-thumb">
+      <img src="${src}" alt="food photo ${i+1}"/>
+      <button class="del-photo" onclick="removePhoto(${i})">✕</button>
+    </div>`).join('');
+}
+function removePhoto(i){ foodPhotos.splice(i,1); renderFoodPhotos(); }
+
+// ── CHIPS ─────────────────────────────────────────────────────────────────
+function toggleChip(el, group){
+  el.classList.toggle('sel');
+  const text = el.textContent;
+  chips[group] = chips[group].includes(text) ? chips[group].filter(x=>x!==text) : [...chips[group], text];
+  if(group==='location') { updatePainZonesDisplay(); drawHead(); }
+}
+
+// ── RELIEF ────────────────────────────────────────────────────────────────
+function setRelief(val){
+  relief=val;
+  document.getElementById('rel-yes').className='relief-btn'+(val==='yes'?' y':'');
+  document.getElementById('rel-part').className='relief-btn'+(val==='partial'?' y':'');
+  document.getElementById('rel-no').className='relief-btn'+(val==='no'?' n':'');
+}
+
+// ── SEVERITY ──────────────────────────────────────────────────────────────
+function updateSev(v){
+  document.getElementById('sev-disp').textContent=v;
+  document.getElementById('sev-lbl').textContent=SEV[v]||'';
+}
+
+// ── SAVE ──────────────────────────────────────────────────────────────────
+function saveLog(){
+  const date = document.getElementById('f-date').value;
+  if(!date){ showToast('⚠️ Please set a date.'); return; }
+  const entry = {
+    id: editingId || Date.now().toString(), date,
+    time: document.getElementById('f-time').value,
+    severity: parseInt(document.getElementById('f-severity').value),
+    painType: [...chips.type], location: [...chips.location],
+    throat: [...chips.throat],
+    durH: document.getElementById('f-dur-h').value,
+    durM: document.getElementById('f-dur-m').value,
+    sx: [...chips.sx], sxNotes: document.getElementById('f-sx-notes').value,
+    sleep: selectedSleep,
+    sleepH: document.getElementById('f-sleep-h').value,
+    sleepQ: document.getElementById('f-sleep-q').value,
+    activities: [...activities],
+    activityNotes: document.getElementById('f-activity-notes').value,
+    food: [...chips.food], foodNotes: document.getElementById('f-food-notes').value,
+    foodPhotos: [...foodPhotos],
+    triggers: [...chips.triggers],
+    meds: [...chips.meds], medOther: document.getElementById('f-med-other').value,
+    relief, notes: document.getElementById('f-notes').value
+  };
+  logs = editingId ? logs.map(l=>l.id===editingId?entry:l) : [entry,...logs];
+  editingId=null;
+  persist(); resetForm(); showToast('✅ Episode saved!'); switchPage('home');
+}
+
+function persist(){ localStorage.setItem('hd-logs-v2',JSON.stringify(logs)); renderLogs(); updateStats(); }
+
+function resetForm(){
+  const now=new Date();
+  document.getElementById('f-date').value=now.toISOString().slice(0,10);
+  document.getElementById('f-time').value=now.toTimeString().slice(0,5);
+  document.getElementById('f-severity').value=5; updateSev(5);
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
+  document.querySelectorAll('.act-chip').forEach(c=>c.classList.remove('sel'));
+  document.querySelectorAll('.sleep-card').forEach(c=>c.classList.remove('sel'));
+  chips={type:[],location:[],throat:[],sx:[],food:[],triggers:[],meds:[]};
+  activities=[]; selectedSleep=null; foodPhotos=[]; relief=null;
+  ['f-dur-h','f-dur-m','f-sx-notes','f-food-notes','f-med-other','f-notes','f-activity-notes','f-sleep-h'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-sleep-q').value='';
+  document.getElementById('food-photos-preview').innerHTML='';
+  document.getElementById('pain-zones-display').innerHTML='';
+  setRelief(null); drawHead();
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────────
+function setFilter(val, el){
+  currentFilter=val;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active'); renderLogs();
+}
+function getFiltered(){
+  const now=new Date();
+  return logs.filter(l=>{
+    if(currentFilter==='all') return true;
+    if(currentFilter==='severe') return l.severity>=7;
+    return (now-new Date(l.date))/86400000<=parseInt(currentFilter);
+  });
+}
+
+// ── RENDER LOGS ───────────────────────────────────────────────────────────
+function renderLogs(){
+  const c=document.getElementById('logs-container');
+  const filtered=getFiltered();
+  if(!filtered.length){ c.innerHTML=`<div class="empty"><div class="emoji">📓</div><h3>No episodes yet</h3><p style="font-size:13px">Tap "Log Episode" below to start tracking.</p></div>`; return; }
+  const tagsHtml=arr=>arr&&arr.length?arr.map(x=>`<span class="tag">${x}</span>`).join(''):'<span style="color:var(--text2);font-size:11px">—</span>';
+  c.innerHTML=filtered.map(l=>{
+    const ds=new Date(l.date+'T00:00').toLocaleDateString('en-PH',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+    const sc=l.severity>=8?'#c0392b':l.severity>=5?'#e67e22':'#27ae60';
+    const dur=(l.durH||l.durM)?`${l.durH||0}h ${l.durM||0}m`:'—';
+    const rTag=l.relief==='yes'?'<span class="tag g">✅ Relief</span>':l.relief==='partial'?'<span class="tag">🔶 Partial</span>':l.relief==='no'?'<span class="tag r">❌ No relief</span>':'';
+    const photoHtml = l.foodPhotos&&l.foodPhotos.length ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">${l.foodPhotos.map(p=>`<img src="${p}" style="width:48px;height:48px;object-fit:cover;border-radius:7px;border:1px solid var(--border)">`).join('')}</div>` : '';
+    return `<div class="log-card">
       <div class="log-card-header">
-        <div>
-          <div class="log-date">${dateStr}</div>
-          <div class="log-time">${l.time ? '🕐 ' + l.time : 'Time not set'}</div>
-        </div>
-        <div class="severity-badge" style="background:${sCol}18;color:${sCol}">
-          💢 ${l.severity}/10
-        </div>
+        <div><div class="log-date">${ds}</div><div class="log-time">${l.time?'🕐 '+l.time:'—'} ${dur!=='—'?'· ⏱ '+dur:''}</div></div>
+        <div class="sev-badge" style="background:${sc}18;color:${sc}">${l.severity}/10</div>
       </div>
       <div class="log-details">
-        ${l.painType.length ? `<div class="log-detail"><span class="icon">🔍</span><span class="label">Type</span><span class="value">${chips(l.painType)}</span></div>` : ''}
-        ${l.location.length ? `<div class="log-detail"><span class="icon">📍</span><span class="label">Location</span><span class="value">${chips(l.location)}</span></div>` : ''}
-        <div class="log-detail"><span class="icon">⏱</span><span class="label">Duration</span><span class="value">${durText}</span></div>
-        ${l.sx.length ? `<div class="log-detail"><span class="icon">😵</span><span class="label">Symptoms</span><span class="value">${chips(l.sx)}</span></div>` : ''}
-        ${l.sxNotes ? `<div class="log-detail"><span class="icon">📝</span><span class="label">Sx notes</span><span class="value" style="font-size:12px;color:var(--text2)">${l.sxNotes}</span></div>` : ''}
-        ${l.food.length || l.foodNotes ? `<div class="log-detail"><span class="icon">🍽</span><span class="label">Food</span><span class="value">${chips(l.food)}${l.foodNotes ? `<div style="font-size:12px;color:var(--text2);margin-top:4px">${l.foodNotes}</div>` : ''}</span></div>` : ''}
-        ${l.triggers.length ? `<div class="log-detail"><span class="icon">⚡</span><span class="label">Triggers</span><span class="value">${chips(l.triggers)}</span></div>` : ''}
-        ${l.meds.length || l.medOther ? `<div class="log-detail"><span class="icon">💊</span><span class="label">Medication</span><span class="value">${chips(l.meds)}${l.medOther ? `<span class="tag">${l.medOther}</span>` : ''}${reliefTag}</span></div>` : ''}
-        ${l.notes ? `<div class="log-detail"><span class="icon">🗒</span><span class="label">Notes</span><span class="value" style="font-size:12px;color:var(--text2)">${l.notes}</span></div>` : ''}
+        ${l.painType&&l.painType.length?`<div class="log-detail"><span class="ld-icon">🔍</span><span class="ld-label">Pain type</span><span>${tagsHtml(l.painType)}</span></div>`:''}
+        ${l.location&&l.location.length?`<div class="log-detail"><span class="ld-icon">📍</span><span class="ld-label">Location</span><span>${tagsHtml(l.location)}</span></div>`:''}
+        ${l.throat&&l.throat.length?`<div class="log-detail"><span class="ld-icon">🫁</span><span class="ld-label">Throat/Neck</span><span>${tagsHtml(l.throat)}</span></div>`:''}
+        ${l.sx&&l.sx.length?`<div class="log-detail"><span class="ld-icon">😵</span><span class="ld-label">Symptoms</span><span>${tagsHtml(l.sx)}</span></div>`:''}
+        ${l.sleep?`<div class="log-detail"><span class="ld-icon">😴</span><span class="ld-label">Sleep</span><span><span class="tag">${l.sleep}</span>${l.sleepH?`<span class="tag">${l.sleepH}h</span>`:''}${l.sleepQ?`<span class="tag">${l.sleepQ}</span>`:''}</span></div>`:''}
+        ${l.activities&&l.activities.length?`<div class="log-detail"><span class="ld-icon">🏃</span><span class="ld-label">Activity</span><span>${tagsHtml(l.activities)}</span></div>`:''}
+        ${l.food&&l.food.length||l.foodNotes?`<div class="log-detail"><span class="ld-icon">🍽</span><span class="ld-label">Food</span><span>${tagsHtml(l.food)}${l.foodNotes?`<div style="font-size:11px;color:var(--text2);margin-top:2px">${l.foodNotes}</div>`:''}${photoHtml}</span></div>`:''}
+        ${l.foodPhotos&&l.foodPhotos.length&&!(l.food&&l.food.length)&&!l.foodNotes?`<div class="log-detail"><span class="ld-icon">📷</span><span class="ld-label">Food photo</span><span>${photoHtml}</span></div>`:''}
+        ${l.triggers&&l.triggers.length?`<div class="log-detail"><span class="ld-icon">⚡</span><span class="ld-label">Triggers</span><span>${tagsHtml(l.triggers)}</span></div>`:''}
+        ${l.meds&&l.meds.length||l.medOther?`<div class="log-detail"><span class="ld-icon">💊</span><span class="ld-label">Medication</span><span>${tagsHtml(l.meds)}${l.medOther?`<span class="tag">${l.medOther}</span>`:''}${rTag}</span></div>`:''}
+        ${l.notes?`<div class="log-detail"><span class="ld-icon">📝</span><span class="ld-label">Notes</span><span style="font-size:11px;color:var(--text2)">${l.notes}</span></div>`:''}
       </div>
       <div class="card-actions">
         <button class="btn-sm" onclick="editLog('${l.id}')">✏️ Edit</button>
@@ -962,165 +995,127 @@ function renderLogs() {
   }).join('');
 }
 
-// ── Stats ──────────────────────────────────────────────────────────────────
-function updateStats() {
-  document.getElementById('stat-total').textContent = logs.length;
-  const avg = logs.length ? (logs.reduce((s,l) => s+l.severity, 0) / logs.length).toFixed(1) : '–';
-  document.getElementById('stat-avg').textContent = avg;
-  const now = new Date();
-  const thisMonth = logs.filter(l => {
-    const d = new Date(l.date);
-    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-  }).length;
-  document.getElementById('stat-this-month').textContent = thisMonth;
+// ── STATS ─────────────────────────────────────────────────────────────────
+function updateStats(){
+  document.getElementById('stat-total').textContent=logs.length;
+  document.getElementById('stat-avg').textContent=logs.length?(logs.reduce((s,l)=>s+l.severity,0)/logs.length).toFixed(1):'–';
+  const now=new Date();
+  document.getElementById('stat-month').textContent=logs.filter(l=>{const d=new Date(l.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();}).length;
 }
 
-// ── Edit ───────────────────────────────────────────────────────────────────
-function editLog(id) {
-  const l = logs.find(x => x.id === id);
-  if (!l) return;
-  editingId = id;
-
-  // Populate form
-  document.getElementById('f-date').value = l.date;
-  document.getElementById('f-time').value = l.time || '';
-  document.getElementById('f-severity').value = l.severity;
-  updateSeverity(l.severity);
-  chips = {
-    type: [...l.painType],
-    location: [...l.location],
-    sx: [...l.sx],
-    food: [...l.food],
-    triggers: [...l.triggers],
-    meds: [...l.meds]
-  };
-  // Re-highlight chips
-  document.querySelectorAll('.chip').forEach(c => {
-    c.classList.remove('selected');
-    const group = c.parentElement.id.replace('chips-','');
-    if (chips[group] && chips[group].includes(c.textContent)) c.classList.add('selected');
+// ── EDIT ──────────────────────────────────────────────────────────────────
+function editLog(id){
+  const l=logs.find(x=>x.id===id); if(!l) return;
+  editingId=id;
+  document.getElementById('f-date').value=l.date;
+  document.getElementById('f-time').value=l.time||'';
+  document.getElementById('f-severity').value=l.severity; updateSev(l.severity);
+  chips={type:[...(l.painType||[])],location:[...(l.location||[])],throat:[...(l.throat||[])],
+         sx:[...(l.sx||[])],food:[...(l.food||[])],triggers:[...(l.triggers||[])],meds:[...(l.meds||[])]};
+  document.querySelectorAll('.chip').forEach(c=>{
+    const g=c.parentElement.id.replace('chips-','');
+    c.classList.toggle('sel',!!(chips[g]&&chips[g].includes(c.textContent)));
   });
-  document.getElementById('f-dur-h').value = l.durH || '';
-  document.getElementById('f-dur-m').value = l.durM || '';
-  document.getElementById('f-sx-notes').value = l.sxNotes || '';
-  document.getElementById('f-food-notes').value = l.foodNotes || '';
-  document.getElementById('f-med-other').value = l.medOther || '';
-  document.getElementById('f-notes').value = l.notes || '';
-  setRelief(l.relief);
-  relief = l.relief;
-
-  switchPage('log');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  showToast('📝 Editing episode — update and save');
+  activities=[...(l.activities||[])];
+  document.querySelectorAll('.act-chip').forEach(c=>{
+    const name=c.textContent.trim().replace(/^[^\s]+\s/,'');
+    c.classList.toggle('sel',activities.some(a=>a.includes(name)||name.includes(a.split(' ')[1]||a)));
+  });
+  selectedSleep=l.sleep||null;
+  document.querySelectorAll('.sleep-card').forEach(c=>c.classList.toggle('sel',c.dataset.pos===selectedSleep));
+  document.getElementById('f-dur-h').value=l.durH||'';
+  document.getElementById('f-dur-m').value=l.durM||'';
+  document.getElementById('f-sx-notes').value=l.sxNotes||'';
+  document.getElementById('f-food-notes').value=l.foodNotes||'';
+  document.getElementById('f-med-other').value=l.medOther||'';
+  document.getElementById('f-notes').value=l.notes||'';
+  document.getElementById('f-activity-notes').value=l.activityNotes||'';
+  document.getElementById('f-sleep-h').value=l.sleepH||'';
+  document.getElementById('f-sleep-q').value=l.sleepQ||'';
+  foodPhotos=[...(l.foodPhotos||[])]; renderFoodPhotos();
+  setRelief(l.relief); relief=l.relief;
+  updatePainZonesDisplay(); drawHead();
+  switchPage('log'); window.scrollTo({top:0,behavior:'smooth'});
+  showToast('📝 Editing — update and save');
 }
 
-// ── Delete ─────────────────────────────────────────────────────────────────
-function deleteLog(id) {
-  if (!confirm('Delete this episode?')) return;
-  logs = logs.filter(l => l.id !== id);
-  persist();
-  showToast('🗑 Deleted');
+// ── DELETE ────────────────────────────────────────────────────────────────
+function deleteLog(id){
+  if(!confirm('Delete this episode?')) return;
+  logs=logs.filter(l=>l.id!==id); persist(); showToast('🗑 Deleted');
 }
 
-// ── Modal ──────────────────────────────────────────────────────────────────
-function closeModal() { document.getElementById('edit-modal').classList.remove('open'); }
-
-// ── Toast ──────────────────────────────────────────────────────────────────
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+// ── NAV ───────────────────────────────────────────────────────────────────
+function switchPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.getElementById('nav-'+id).classList.add('active');
+  if(id==='log'){ setTimeout(()=>{ resizeCanvas(); drawHead(); },50); }
 }
 
-function printSummary() {
-  const data = JSON.parse(localStorage.getItem('hd-logs') || '[]');
-  if (!data.length) { alert('No episodes logged yet.'); return; }
+function closeModal(){ document.getElementById('edit-modal').classList.remove('open'); }
 
-  const SEVERITY_LABELS = ['','Minimal','Very Mild','Mild','Mild-Moderate','Moderate','Moderate','Moderate-Severe','Severe','Very Severe','Worst Possible'];
-  const reliefText = r => r === 'yes' ? 'Yes – with relief' : r === 'partial' ? 'Partial relief' : r === 'no' ? 'No relief' : 'N/A';
+// ── TOAST ─────────────────────────────────────────────────────────────────
+function showToast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
 
-  const rows = data.map((l, i) => {
-    const date = new Date(l.date + 'T00:00').toLocaleDateString('en-PH', { weekday:'short', year:'numeric', month:'short', day:'numeric' });
-    const dur = (l.durH || l.durM) ? `${l.durH||0}h ${l.durM||0}m` : '—';
-    const meds = [...(l.meds||[]), l.medOther].filter(Boolean).join(', ') || '—';
-    const sx = [...(l.sx||[])].join(', ') || '—';
-    const food = [...(l.food||[])].join(', ') || '—';
-    const triggers = [...(l.triggers||[])].join(', ') || '—';
-    const loc = [...(l.location||[])].join(', ') || '—';
-    const type = [...(l.painType||[])].join(', ') || '—';
-
-    return `
-      <tr style="background:${i%2===0?'#faf7f2':'#fff'}">
-        <td>${i+1}</td>
-        <td>${date}${l.time ? '<br><small>'+l.time+'</small>' : ''}</td>
-        <td style="text-align:center;font-weight:bold;color:${l.severity>=8?'#c0392b':l.severity>=5?'#e67e22':'#27ae60'}">${l.severity}/10<br><small>${SEVERITY_LABELS[l.severity]}</small></td>
-        <td>${type}<br><small style="color:#888">${loc}</small></td>
-        <td>${dur}</td>
-        <td>${sx}${l.sxNotes ? '<br><small style="color:#888">'+l.sxNotes+'</small>' : ''}</td>
-        <td>${food}${l.foodNotes ? '<br><small style="color:#888">'+l.foodNotes+'</small>' : ''}</td>
-        <td>${triggers}</td>
-        <td>${meds}<br><small style="color:#888">${reliefText(l.relief)}</small></td>
-        <td>${l.notes||'—'}</td>
-      </tr>`;
-  }).join('');
-
-  const avg = (data.reduce((s,l)=>s+l.severity,0)/data.length).toFixed(1);
-  const now = new Date();
-  const thisMonth = data.filter(l => { const d=new Date(l.date); return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear(); }).length;
-
-  const html = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8"/>
-  <title>Headache Diary – Patient Summary</title>
-  <style>
-    body { font-family: Arial, sans-serif; font-size: 11px; color: #1a1208; margin: 20px; }
-    h1 { font-size: 20px; color: #c0392b; margin-bottom: 4px; }
-    .meta { color: #666; font-size: 11px; margin-bottom: 16px; }
-    .stats { display: flex; gap: 20px; margin-bottom: 16px; }
-    .stat { background: #faf7f2; border: 1px solid #e8dfd0; border-radius: 8px; padding: 10px 16px; text-align: center; }
-    .stat-num { font-size: 22px; font-weight: bold; color: #c0392b; }
-    .stat-label { font-size: 10px; color: #666; }
-    table { width: 100%; border-collapse: collapse; font-size: 10px; }
-    th { background: #c0392b; color: white; padding: 6px 5px; text-align: left; font-size: 10px; }
-    td { padding: 5px; border-bottom: 1px solid #e8dfd0; vertical-align: top; }
-    small { font-size: 9px; }
-    .footer { margin-top: 20px; font-size: 10px; color: #888; border-top: 1px solid #e8dfd0; padding-top: 10px; }
-    @media print { body { margin: 10px; } }
-  </style>
-</head>
-<body>
+// ── PRINT ─────────────────────────────────────────────────────────────────
+function printSummary(){
+  const data=JSON.parse(localStorage.getItem('hd-logs-v2')||'[]');
+  if(!data.length){alert('No episodes logged yet.');return;}
+  const reliefText=r=>r==='yes'?'With relief':r==='partial'?'Partial relief':r==='no'?'No relief':'N/A';
+  const rows=data.map((l,i)=>`<tr style="background:${i%2===0?'#faf6f0':'#fff'}">
+    <td>${i+1}</td>
+    <td>${new Date(l.date+'T00:00').toLocaleDateString('en-PH',{weekday:'short',year:'numeric',month:'short',day:'numeric'})}${l.time?'<br><small>'+l.time+'</small>':''}</td>
+    <td style="text-align:center;font-weight:bold;color:${l.severity>=8?'#c0392b':l.severity>=5?'#e67e22':'#27ae60'}">${l.severity}/10<br><small>${SEV[l.severity]}</small></td>
+    <td>${[...(l.painType||[])].join(', ')||'—'}<br><small>${[...(l.location||[])].join(', ')||''}</small>${l.throat&&l.throat.length?'<br><small style="color:#c0392b">Throat: '+l.throat.join(', ')+'</small>':''}</td>
+    <td>${(l.durH||l.durM)?l.durH+'h '+l.durM+'m':'—'}</td>
+    <td>${[...(l.sx||[])].join(', ')||'—'}${l.sxNotes?'<br><small>'+l.sxNotes+'</small>':''}</td>
+    <td>${l.sleep||'—'}${l.sleepH?' ('+l.sleepH+'h)':''}</td>
+    <td>${[...(l.activities||[])].join(', ')||'—'}</td>
+    <td>${[...(l.food||[])].join(', ')||'—'}${l.foodNotes?'<br><small>'+l.foodNotes+'</small>':''}</td>
+    <td>${[...(l.triggers||[])].join(', ')||'—'}</td>
+    <td>${[...(l.meds||[]),l.medOther].filter(Boolean).join(', ')||'—'}<br><small>${reliefText(l.relief)}</small></td>
+    <td>${l.notes||'—'}</td>
+  </tr>`).join('');
+  const now=new Date();
+  const avg=(data.reduce((s,l)=>s+l.severity,0)/data.length).toFixed(1);
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>Headache Diary – Patient Summary</title>
+  <style>body{font-family:Arial,sans-serif;font-size:10px;color:#2c1f15;margin:15px}h1{font-size:18px;color:#6b3a2a;margin-bottom:3px}.meta{color:#666;font-size:10px;margin-bottom:12px}.stats{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap}.stat{background:#faf6f0;border:1px solid #e2d0bc;border-radius:6px;padding:8px 12px;text-align:center}.stat-num{font-size:20px;font-weight:bold;color:#6b3a2a}.stat-label{font-size:9px;color:#7a5c45}table{width:100%;border-collapse:collapse;font-size:9px}th{background:#6b3a2a;color:white;padding:5px 4px;text-align:left}td{padding:4px;border-bottom:1px solid #e2d0bc;vertical-align:top}small{font-size:8px}.footer{margin-top:14px;font-size:9px;color:#888;border-top:1px solid #e2d0bc;padding-top:8px}@media print{body{margin:8px}}</style>
+  </head><body>
   <h1>🧠 Headache Diary – Patient Summary</h1>
-  <div class="meta">Printed: ${now.toLocaleDateString('en-PH', {weekday:'long',year:'numeric',month:'long',day:'numeric'})} &nbsp;|&nbsp; Patient: michicoannedk</div>
+  <div class="meta">Printed: ${now.toLocaleDateString('en-PH',{weekday:'long',year:'numeric',month:'long',day:'numeric'})} | Patient: Michico Anne DK</div>
   <div class="stats">
     <div class="stat"><div class="stat-num">${data.length}</div><div class="stat-label">Total Episodes</div></div>
     <div class="stat"><div class="stat-num">${avg}</div><div class="stat-label">Avg Severity</div></div>
-    <div class="stat"><div class="stat-num">${thisMonth}</div><div class="stat-label">This Month</div></div>
+    <div class="stat"><div class="stat-num">${data.filter(l=>{const d=new Date(l.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();}).length}</div><div class="stat-label">This Month</div></div>
     <div class="stat"><div class="stat-num">${data.filter(l=>l.severity>=7).length}</div><div class="stat-label">Severe (7+)</div></div>
     <div class="stat"><div class="stat-num">${data.filter(l=>l.relief==='no').length}</div><div class="stat-label">No Relief</div></div>
+    <div class="stat"><div class="stat-num">${data.filter(l=>l.throat&&l.throat.length).length}</div><div class="stat-label">Throat Symptoms</div></div>
   </div>
-  <table>
-    <thead>
-      <tr>
-        <th>#</th><th>Date / Time</th><th>Severity</th><th>Type / Location</th>
-        <th>Duration</th><th>Other Symptoms</th><th>Food / Drink</th>
-        <th>Triggers</th><th>Medication & Relief</th><th>Notes</th>
-      </tr>
-    </thead>
-    <tbody>${rows}</tbody>
-  </table>
-  <div class="footer">Generated by Headache Diary App &nbsp;|&nbsp; Bring this to your next doctor consultation.</div>
-</body>
-</html>`;
-
-  const win = window.open('', '_blank');
-  win.document.write(html);
-  win.document.close();
-  setTimeout(() => win.print(), 500);
+  <table><thead><tr><th>#</th><th>Date/Time</th><th>Severity</th><th>Pain Type/Location</th><th>Duration</th><th>Symptoms</th><th>Sleep</th><th>Activity</th><th>Food</th><th>Triggers</th><th>Medication</th><th>Notes</th></tr></thead>
+  <tbody>${rows}</tbody></table>
+  <div class="footer">Generated by Headache Diary App · Bring to every doctor consultation · michicoannedk</div>
+  </body></html>`);
+  win.document.close(); setTimeout(()=>win.print(),500);
 }
 
+// ── INIT ──────────────────────────────────────────────────────────────────
+function init(){
+  const now=new Date();
+  document.getElementById('today-date').textContent=now.toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
+  document.getElementById('f-date').value=now.toISOString().slice(0,10);
+  document.getElementById('f-time').value=now.toTimeString().slice(0,5);
+  renderLogs(); updateStats();
+  setTimeout(()=>{ resizeCanvas(); },100);
+  window.addEventListener('resize', resizeCanvas);
+}
 init();
 </script>
 </body>
 </html>
+HTMLEOF
